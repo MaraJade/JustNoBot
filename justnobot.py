@@ -2,12 +2,14 @@
 import praw
 import time
 
-SUBREDDIT = "MaraTesting"
-USER_AGENT = "bot1"
+SUBREDDIT = "SUBREDDIT"
+USER_AGENT = "USER AGENT"
+BOT_NAME = "BOT NAME" 
+
 
 def duplicate_preventer(post):
     for comment in list(post.comments):
-        if comment.author == "Mara_Jade_Skywalker":
+        if comment.author == BOT_NAME:
             return True
 
     return False
@@ -19,7 +21,7 @@ def get_posts():
         history = []
         for link in post.author.submissions.new():
             print(link.subreddit)
-            if link.subreddit == "MaraTesting":
+            if link.subreddit == SUBREDDIT:
                 history.append(link)
 
         message = "Other posts from /u/{}:\n\n\n".format(str(post.author))
@@ -44,6 +46,6 @@ def get_posts():
         time.sleep(2)
 
 if __name__ == '__main__':
-    reddit = praw.Reddit('bot1')
-    subreddit = reddit.subreddit("MaraTesting")
+    reddit = praw.Reddit(USER_AGENT)
+    subreddit = reddit.subreddit(SUBREDDIT)
     get_posts()
