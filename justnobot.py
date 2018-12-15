@@ -108,21 +108,21 @@ def get_posts(subreddit):
                 message = "Welcome to /r/JUSTNOMIL!\n\n" \
                           "I'm JustNoBot. I help people follow your posts!\n\n"
             else:
-                message = "Other posts from /u/{}:\n\n\n".format(str(post.author).encode('utf-8'))
+                message = "Other posts from /u/{}:\n\n\n".format(str(post.author.encode('utf-8')))
 
                 count = 0
                 longer = False
                 for entry in history:
-                    message = message + ("* [{}]({})\n\n".format(str(entry.title).encode('utf-8'), str(entry.permalink).encode('utf-8')))
+                    message = message + ("* [{}]({})\n\n".format(str(entry.title.encode('utf-8')), str(entry.permalink.encode('utf-8'))))
                     count = count + 1 
                     if count == 10:
                         longer = True
                         break
 
                 if longer:
-                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author).encode('utf-8')))
+                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author.encode('utf-8'))))
 
-            message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})".format(str(post.author).encode('utf-8'), BOT_NAME, str(post.author).encode('utf-8'), str(post.subreddit).encode('utf-8')))
+            message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})".format(str(post.author.encode('utf-8')), BOT_NAME, str(post.author.encode('utf-8')), str(post.subreddit.encode('utf-8'))))
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
 
             post.reply(message)
@@ -133,9 +133,9 @@ def get_posts(subreddit):
             subscribers = dbsearch(post.author)
 
             if subscribers is not None:
-                subject = "New submission by /u/{}".format(str(post.author))
+                subject = "New submission by /u/{}".format(str(post.author.encode('utf-8')))
                 for subscriber in subscribers:
-                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(str(subscriber[0]), str(post.author), str(post.title), str(post.permalink), BOT_NAME, str(post.author), str(post.subreddit))
+                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(str(subscriber[0]), str(post.author.encode('utf-8')), str(post.title.encode('utf-8')), str(post.permalink.encode('utf-8')), BOT_NAME, str(post.author.encode('utf-8')), str(post.subreddit.encode('utf-8')))
                     reddit.redditor(str(subscriber[0])).message(subject=subject, message=body)
                     time.sleep(600)
 
