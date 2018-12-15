@@ -135,7 +135,7 @@ def get_posts(subreddit):
             if subscribers is not None:
                 subject = "New submission by /u/{}".format(str((post.author).encode('utf-8')))
                 for subscriber in subscribers:
-                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(str(subscriber[0]), str((post.author).encode('utf-8')), str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, str((post.author).encode('utf-8')), str((post.subreddit).encode('utf-8'))) reddit.redditor(str(subscriber[0])).message(subject=subject, message=body)
+                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(str(subscriber[0]), str((post.author).encode('utf-8')), str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, str((post.author).encode('utf-8')), str((post.subreddit).encode('utf-8'))), reddit.redditor(str(subscriber[0])).message(subject=subject, message=body) 
 
                     time.sleep(600)
 
