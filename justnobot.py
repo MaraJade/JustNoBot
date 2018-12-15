@@ -108,7 +108,7 @@ def get_posts(subreddit):
                 message = "Welcome to /r/JUSTNOMIL!\n\n" \
                           "I'm JustNoBot. I help people follow your posts!\n\n"
             else:
-                message = "Other posts from /u/{}:\n\n\n".format(str(post.author).encode('utf-8')
+                message = "Other posts from /u/{}:\n\n\n".format(str(post.author).encode('utf-8'))
 
                 count = 0
                 longer = False
