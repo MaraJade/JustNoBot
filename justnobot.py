@@ -94,7 +94,7 @@ def get_messages():
             removeSubscriber(message.author, parts[1], parts[2])
 
         message.mark_read()
-        time.sleep(1)
+        time.sleep(5)
 
 def get_posts(subreddit):
     for post in subreddit.new(limit=1000):
@@ -139,8 +139,9 @@ def get_posts(subreddit):
             message = message + "\n\n*I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
 
 
-            post.reply(message)
-            print("Post replied to")
+            if post.locked != True:
+                post.reply(message)
+                print("Post replied to")
 
             time.sleep(5)
 
