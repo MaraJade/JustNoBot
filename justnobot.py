@@ -141,8 +141,8 @@ def get_posts(subreddit):
 
             print(post.locked)
             #if post.locked != True:
-                post.reply(message)
-                print("Post replied to")
+            post.reply(message)
+            print("Post replied to")
 
             time.sleep(5)
 
