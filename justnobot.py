@@ -10,8 +10,7 @@ DATABASE = "justno.db"
 
 MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics)  | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory) | [Worst Wiki](https://www.reddit.com/r/JUSTNOMIL/wiki/worst)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?sort=new&restrict_sr=on&q=flair%3AMIL%2Bin%2Bthe%2Bwild) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n [Fear mongering new posters will result in a temp ban.](https://www.reddit.com/r/JUSTNOMIL/comments/8z73mv/who_loves_a_pie_chart_i_do_i_do_survey_results/e2glikt/)\n\n Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)\n\n******\n\n"
 
-BOT_ENDING = "\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/JUSTNOMIL) if you have any questions or concerns.*\n\n"
-
+BOT_ENDING = 
 def dbinit():
     global dbConn
     dbConn = sqlite3.connect(DATABASE)
@@ -110,7 +109,7 @@ def get_posts(subreddit):
 
             
             if len(history) < 1:
-                welcome = "Welcome to /r/JUSTNOMIL!\n\nI'm JustNoBot. I help people follow your posts!\n\n"
+                welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
                 if subreddit == "JUSTNOMIL":
                     message = MIL_RULES + welcome
                 else:
@@ -138,7 +137,8 @@ def get_posts(subreddit):
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
 
 
-            message = message + BOT_ENDING
+            message = message + "\n\n*I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
+
 
             post.reply(message)
             print("Post replied to")
