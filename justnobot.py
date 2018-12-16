@@ -97,7 +97,7 @@ def get_messages():
         time.sleep(20)
 
 def get_posts(subreddit):
-    for post in subreddit.new(limit=1000):
+    for post in subreddit.new(limit=100):
         if duplicate_preventer(post):
             continue
         else:
