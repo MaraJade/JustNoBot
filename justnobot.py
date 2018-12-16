@@ -167,6 +167,7 @@ if __name__ == '__main__':
     subs = ["Justnofil", "JustNoSO", "JustNoFriends", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL", "JUSTNOMIL"]
     while True:
         for sub in subs:
+            print(sub)
             subreddit = reddit.subreddit(sub)
             get_posts(subreddit)
 
