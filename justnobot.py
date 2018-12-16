@@ -106,7 +106,7 @@ def get_posts(subreddit):
                 if link.subreddit == subreddit.display_name:
                     history.append(link)
 
-            
+            message = ''            
             if len(history) < 1:
                 welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
                 if subreddit == "JUSTNOMIL":
