@@ -144,7 +144,7 @@ def get_posts(subreddit):
                 try:
                     post.reply(message)
                     print("Post replied to")
-                except RATELIMIT as e:
+                except praw.exceptions.APIException as e:
                     print(e)
                     time.sleep(60)
 
