@@ -148,11 +148,11 @@ def get_posts(subreddit):
                     print(e)
                     time.sleep(60)
                     if e == "RATELIMIT: 'you are doing that too much. try again in 5 seconds.' on field 'ratelimit'":
-                    try:
-                        post.reply(message)
-                        print("Post replied to on second attempt")
-                    except praw.exceptions.APIException as e:
-                        print(e)
+                        try:
+                            post.reply(message)
+                            print("Post replied to on second attempt")
+                        except praw.exceptions.APIException as e:
+                            print(e)
 
 
             time.sleep(30)
