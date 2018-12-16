@@ -94,6 +94,7 @@ def get_messages():
             removeSubscriber(message.author, parts[1], parts[2])
 
         message.mark_read()
+        print("Message read")
         time.sleep(30)
 
 def get_posts(subreddit):
@@ -150,7 +151,7 @@ def get_posts(subreddit):
                     if e == "RATELIMIT: 'you are doing that too much. try again in 5 seconds.' on field 'ratelimit'":
                     try:
                         post.reply(message)
-                        print("Post replied to")
+                        print("Post replied to on second attempt")
                     except praw.exceptions.APIException as e:
                         print(e)
 
@@ -163,6 +164,7 @@ def get_posts(subreddit):
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(str(subscriber[0]), str((post.author)), str((post.title)), str((post.permalink).encode('utf-8')), BOT_NAME, str((post.author)), str((post.subreddit))), reddit.redditor(str(subscriber[0])).message(subject=subject, message=body) 
+                    print("Subsriber notified")
 
                     time.sleep(30)
 
