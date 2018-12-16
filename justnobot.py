@@ -139,7 +139,8 @@ def get_posts(subreddit):
             message = message + "\n\n*I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
 
 
-            if post.locked != True:
+            print(post.locked)
+            #if post.locked != True:
                 post.reply(message)
                 print("Post replied to")
 
