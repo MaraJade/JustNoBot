@@ -5,8 +5,12 @@ import string
 import sqlite3
 
 USER_AGENT = "bot1"
-BOT_NAME = "" 
+BOT_NAME = "TheJustNoBot" 
 DATABASE = "justno.db"
+
+MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics)  | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory) | [Worst Wiki](https://www.reddit.com/r/JUSTNOMIL/wiki/worst)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?sort=new&restrict_sr=on&q=flair%3AMIL%2Bin%2Bthe%2Bwild) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n [Fear mongering new posters will result in a temp ban.](https://www.reddit.com/r/JUSTNOMIL/comments/8z73mv/who_loves_a_pie_chart_i_do_i_do_survey_results/e2glikt/)\n\n Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)\n\n******\n\n"
+
+BOT_ENDING = "*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/JUSTNOMIL) if you have any questions or concerns.*\n\n"
 
 def dbinit():
     global dbConn
@@ -104,11 +108,19 @@ def get_posts(subreddit):
                 if link.subreddit == subreddit.display_name:
                     history.append(link)
 
+            
             if len(history) < 1:
-                message = "Welcome to /r/JUSTNOMIL!\n\n" \
-                          "I'm JustNoBot. I help people follow your posts!\n\n"
+                welcome = "Welcome to /r/JUSTNOMIL!\n\nI'm JustNoBot. I help people follow your posts!\n\n"
+                if subreddit == "JUSTNOMIL":
+                    message = MIL_RULES + welcome
+                else:
+                    message = welcome
             else:
-                message = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
+                welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
+                if subreddit == "JUSTNOMIL":
+                    message = MIL_RULES + welcome
+                else:
+                    message = welcome
 
                 count = 0
                 longer = False
@@ -125,10 +137,13 @@ def get_posts(subreddit):
             message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})".format(str((post.author)), BOT_NAME, str((post.author)), str((post.subreddit))))
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
 
+
+            message = message + BOT_ENDING
+
             post.reply(message)
             print("Post replied to")
 
-            time.sleep(600)
+            time.sleep(300)
 
             subscribers = dbsearch(post.author)
 
@@ -137,7 +152,7 @@ def get_posts(subreddit):
                 for subscriber in subscribers:
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(str(subscriber[0]), str((post.author)), str((post.title)), str((post.permalink).encode('utf-8')), BOT_NAME, str((post.author)), str((post.subreddit))), reddit.redditor(str(subscriber[0])).message(subject=subject, message=body) 
 
-                    time.sleep(600)
+                    time.sleep(300)
 
 
 if __name__ == '__main__':
@@ -148,7 +163,7 @@ if __name__ == '__main__':
 
     reddit = praw.Reddit(USER_AGENT)
 
-    subs = ["JUSTNOMIL", "Justnofil", "JustNoSO", "JustNoFriends", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL"]
+    subs = ["Justnofil", "JustNoSO", "JustNoFriends", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL", "JUSTNOMIL"]
     while True:
         for sub in subs:
             subreddit = reddit.subreddit(sub)
