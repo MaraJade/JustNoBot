@@ -72,6 +72,7 @@ def removeSubscriber(subscriber, subscribedTo, subreddit):
     ''', (str(subscriber), str(subscribedTo), str(subreddit)))
 
     dbConn.commit()
+    print("Subscription removed")
 
     if c.rowcount == 1:
         return True
@@ -94,7 +95,6 @@ def get_messages():
             removeSubscriber(message.author, parts[1], parts[2])
 
         message.mark_read()
-        print("Message read")
         time.sleep(30)
 
 def get_posts(subreddit):
@@ -138,7 +138,6 @@ def get_posts(subreddit):
 
 
             message = message + "\n\n*I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
-
 
             print(post.locked)
             if post.locked != True:
@@ -184,4 +183,6 @@ if __name__ == '__main__':
             subreddit = reddit.subreddit(sub)
             get_posts(subreddit)
 
+        print("Posts gotten, getting messages")
         get_messages()
+        print("Messages gotten, getting posts")
