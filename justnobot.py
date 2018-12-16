@@ -141,8 +141,12 @@ def get_posts(subreddit):
 
             print(post.locked)
             if post.locked != True:
-                post.reply(message)
-                print("Post replied to")
+                try:
+                    post.reply(message)
+                    print("Post replied to")
+                except RATELIMIT as e:
+                    print(e)
+                    time.sleep(60)
 
             time.sleep(30)
 
