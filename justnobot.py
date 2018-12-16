@@ -100,7 +100,7 @@ def get_posts(subreddit):
     for post in subreddit.new(limit=100):
         if duplicate_preventer(post):
             continue
-        else if post.author is not None:
+        elif post.author is not None:
             history = []
             for link in post.author.submissions.new(limit=100):
                 if link.subreddit == subreddit.display_name:
