@@ -142,18 +142,19 @@ def get_posts(subreddit):
             print(post.locked)
             if post.locked != True:
                 try:
-                    post.reply(message)
+                    comment = post.reply(message)
                     print("Post replied to")
                 except praw.exceptions.APIException as e:
                     print(e)
                     time.sleep(60)
                     if e == "RATELIMIT: 'you are doing that too much. try again in 5 seconds.' on field 'ratelimit'":
                         try:
-                            post.reply(message)
+                            comment = post.reply(message)
                             print("Post replied to on second attempt")
                         except praw.exceptions.APIException as e:
                             print(e)
-
+                if post.subreddit == "JUSTNOMIL":
+                    comment.mod.distinguish(sticky=True)
 
             time.sleep(30)
 
