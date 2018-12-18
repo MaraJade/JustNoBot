@@ -60,7 +60,7 @@ def addSubscriber(subscriber, subscribedTo, subreddit):
                 INSERT INTO subscriptions
                 (Subscriber, SubscribedTo, Subreddit)
                 VALUES (?, ?, ?)
-        ''', (str((subscriber).format('utf-8')), str(subscribedTo), str(subreddit)))
+        ''', (subscriber, str(subscribedTo), str(subreddit)))
     except sqlite3.IntegrityError:
         print("Failed to add subscription")
         return False
@@ -78,7 +78,7 @@ def removeSubscriber(subscriber, subscribedTo, subreddit):
             WHERE Subscriber = ?
                 AND SubscribedTo = ?
                 AND Subreddit = ?
-    ''', (str(subscriber), str(subscribedTo), str(subreddit)))
+    ''', (subscriber, str(subscribedTo), str(subreddit)))
 
     dbConn.commit()
     print("Subscription removed")
@@ -190,11 +190,13 @@ if __name__ == '__main__':
 
     subs = ["Justnofil", "JustNoSO", "JustNoFriends", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL", "JUSTNOMIL"]
     while True:
+        get_messages()
+        print("Messages gotten, getting posts")
+
         for sub in subs:
             print(sub)
             subreddit = reddit.subreddit(sub)
             get_posts(subreddit)
 
         print("Posts gotten, getting messages")
-        get_messages()
-        print("Messages gotten, getting posts")
+
