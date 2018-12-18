@@ -61,7 +61,7 @@ def addSubscriber(subscriber, subscribedTo, subreddit):
                 INSERT INTO subscriptions
                 (Subscriber, SubscribedTo, Subreddit)
                 VALUES (?, ?, ?)
-        ''', (subscriber.encode('utf-8'), str(subscribedTo), str(subreddit)))
+        ''', (str(subscriber), str(subscribedTo), str(subreddit)))
     except sqlite3.IntegrityError:
         print("Failed to add subscription")
         return False
