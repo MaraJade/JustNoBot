@@ -55,7 +55,7 @@ def dbsearch(poster):
 def addSubscriber(subscriber, subscribedTo, subreddit):
     c = dbConn.cursor()
 
-    print(subscriber + " " + type(subscriber)
+    print(subscriber + " " + type(subscriber))
     try:
         c.execute('''
                 INSERT INTO subscriptions
