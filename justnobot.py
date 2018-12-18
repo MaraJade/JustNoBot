@@ -98,9 +98,9 @@ def duplicate_preventer(post):
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
         parts = message.body.split(' ')
-        if message.subject == "Subscribe":
+        if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
-        elif message.subject == "Unsubscribe":
+        elif message.subject == "Unsubscribe" and len(parts) > 2:
             removeSubscriber(message.author, parts[1], parts[2])
 
         message.mark_read()
