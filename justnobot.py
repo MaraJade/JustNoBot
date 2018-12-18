@@ -30,6 +30,15 @@ def dbsetup():
 
     dbConn.commit()
 
+    #c.execute('''
+    #        CREATE TABLE IF NOT EXISTS locked_posts (
+    #            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    #            PostID VARCHAR(80) NOT NULL
+    #        )
+    #''')
+
+    #dbConn.commit()
+
 def dbclose():
     dbConn.commit()
     dbConn.close()
@@ -99,6 +108,7 @@ def get_messages():
 
 def get_posts(subreddit):
     for post in subreddit.new(limit=100):
+        print(post)
         if duplicate_preventer(post):
             continue
         elif post.author is not None:
