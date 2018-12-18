@@ -60,7 +60,7 @@ def addSubscriber(subscriber, subscribedTo, subreddit):
                 INSERT INTO subscriptions
                 (Subscriber, SubscribedTo, Subreddit)
                 VALUES (?, ?, ?)
-        ''', (subscriber, str(subscribedTo), str(subreddit)))
+        ''', (str(subscriber), str(subscribedTo), str(subreddit)))
     except sqlite3.IntegrityError:
         print("Failed to add subscription")
         return False
@@ -78,7 +78,7 @@ def removeSubscriber(subscriber, subscribedTo, subreddit):
             WHERE Subscriber = ?
                 AND SubscribedTo = ?
                 AND Subreddit = ?
-    ''', (subscriber, str(subscribedTo), str(subreddit)))
+    ''', (str(subscriber), str(subscribedTo), str(subreddit)))
 
     dbConn.commit()
     print("Subscription removed")
