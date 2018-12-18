@@ -78,7 +78,7 @@ def removeSubscriber(subscriber, subscribedTo, subreddit):
             WHERE Subscriber = ?
                 AND SubscribedTo = ?
                 AND Subreddit = ?
-    ''', (str(subscriber), str(subscribedTo), str(subreddit)))
+    ''', (subscriber.encode('utf-8'), str(subscribedTo), str(subreddit)))
 
     dbConn.commit()
     print("Subscription removed")
