@@ -30,12 +30,12 @@ def dbsetup():
 
     dbConn.commit()
 
-    #c.execute('''
-    #        CREATE TABLE IF NOT EXISTS locked_posts (
-    #            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    #            PostID VARCHAR(80) NOT NULL
-    #        )
-    #''')
+    c.execute('''
+            CREATE TABLE IF NOT EXISTS marked_posts (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                PostID VARCHAR(80) NOT NULL
+            )
+    ''')
 
     #dbConn.commit()
 
@@ -56,7 +56,6 @@ def addSubscriber(subscriber, subscribedTo, subreddit):
     c = dbConn.cursor()
 
     print(subscriber)
-    print(type(subscriber))
     try:
         c.execute('''
                 INSERT INTO subscriptions
@@ -97,6 +96,33 @@ def duplicate_preventer(post):
 
     return False
 
+def mark_post(post):
+    c = dbConn.cursor()
+
+    try:
+        c.execute('''
+                INSERT INTO marked_posts
+                (PostID)
+                VALUES (?)
+        ''', (str(post),))
+    except sqlite3.IntegrityError:
+        print("Failed to add marked post")
+        return False
+
+    dbConn.commit()
+    print("Post marked")
+    
+    return True
+
+def is_marked(post):
+    c = dbConn.cursor()
+
+    return c.execute('''
+            SELECT PostID
+            FROM marked_posts
+            WHERE PostID = ?
+    ''', (str(post),))
+
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
         parts = message.body.split(' ')
@@ -110,10 +136,9 @@ def get_messages():
 
 def get_posts(subreddit):
     for post in subreddit.new(limit=100):
-        print(type(post))
         if duplicate_preventer(post):
             continue
-        elif post.author is not None:
+        elif post.author is not None and is_marked(post) is None:
             history = []
             for link in post.author.submissions.new(limit=100):
                 if link.subreddit == subreddit.display_name:
@@ -165,8 +190,14 @@ def get_posts(subreddit):
                             print("Post replied to on second attempt")
                         except praw.exceptions.APIException as e:
                             print(e)
+                    elif e == "TOO_OLD: 'that's a piece of history now; it's too late to reply to it' on field 'parent'"
+                        mark_post(post)
+                        print("Post marked")
                 if post.subreddit == "JUSTNOMIL":
                     comment.mod.distinguish(sticky=True)
+            else:
+                mark_post(post)
+                print("Post marked")
 
             time.sleep(30)
 
