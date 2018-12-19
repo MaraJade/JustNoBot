@@ -190,7 +190,7 @@ def get_posts(subreddit):
                             print("Post replied to on second attempt")
                         except praw.exceptions.APIException as e:
                             print(e)
-                    elif e == "TOO_OLD: 'that's a piece of history now; it's too late to reply to it' on field 'parent'"
+                    elif e == "TOO_OLD: 'that's a piece of history now; it's too late to reply to it' on field 'parent'":
                         mark_post(post)
                         print("Post marked")
                 if post.subreddit == "JUSTNOMIL":
