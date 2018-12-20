@@ -136,6 +136,7 @@ def get_messages():
 
 def get_posts(subreddit):
     for post in subreddit.new(limit=100):
+        print(is_marked(post))
         if duplicate_preventer(post):
             continue
         elif post.author is not None and is_marked(post) is None:
