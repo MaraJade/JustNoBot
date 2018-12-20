@@ -37,7 +37,7 @@ def dbsetup():
             )
     ''')
 
-    #dbConn.commit()
+    dbConn.commit()
 
 def dbclose():
     dbConn.commit()
