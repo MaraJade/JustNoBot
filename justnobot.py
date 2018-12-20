@@ -56,6 +56,8 @@ def addSubscriber(subscriber, subscribedTo, subreddit):
     c = dbConn.cursor()
 
     print(subscriber)
+    print(subscribedTo)
+    print(subreddit)
     try:
         c.execute('''
                 INSERT INTO subscriptions
