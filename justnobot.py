@@ -125,6 +125,7 @@ def is_marked(post):
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
+        print(message)
         parts = message.body.split(' ')
         if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
