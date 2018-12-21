@@ -120,20 +120,29 @@ def mark_post(post):
 def is_marked(post):
     c = dbConn.cursor()
 
-    return c.execute('''
-            SELECT EXISTS (
-                SELECT PostID
-                FROM marked_posts
-                WHERE PostID = ?
-            )
+    #return c.execute('''
+    #        SELECT EXISTS (
+    #            SELECT PostID
+    #            FROM marked_posts
+    #            WHERE PostID = ?
+    #        )
+    #''', (str(post),))
+
+    c.execute('''
+            SELECT count (*)
+            FROM marked_posts
+            WHERE PostID = ?
     ''', (str(post),))
+
+    return c.fetchone()[0]
+
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
         print(message.body)
         message.body = message.body.replace(u'\xa0', u' ')
         parts = message.body.split(' ')
-        print(parts)
+        #print(parts)
         if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
         elif message.subject == "Unsubscribe" and len(parts) > 2:
