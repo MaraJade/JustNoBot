@@ -132,7 +132,7 @@ def get_messages():
         print(message.body)
         parts = message.body.split(' ')
         for part in parts:
-            part = part.split('\xa0')
+            part = part.decode('utf-8').split('\xa0')
         print(parts)
         if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
