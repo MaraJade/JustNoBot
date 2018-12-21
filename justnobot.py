@@ -43,14 +43,15 @@ def dbclose():
     dbConn.commit()
     dbConn.close()
 
-def dbsearch(poster):
+def dbsearch(poster, subreddit):
     c = dbConn.cursor()
 
     return c.execute('''
             SELECT Subscriber
             FROM subscriptions
             WHERE SubscribedTo = ?
-    ''', (str(poster),))
+            AND Subreddit = ?
+    ''', (str(poster), str(subreddit)))
 
 def addSubscriber(subscriber, subscribedTo, subreddit):
     c = dbConn.cursor()
@@ -209,7 +210,7 @@ def get_posts(subreddit):
 
             time.sleep(30)
 
-            subscribers = dbsearch(post.author)
+            subscribers = dbsearch(post.author, post.subreddit)
 
             if subscribers is not None:
                 subject = "New submission by /u/{}".format(str((post.author)))
