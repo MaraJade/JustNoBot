@@ -55,9 +55,9 @@ def dbsearch(poster):
 def addSubscriber(subscriber, subscribedTo, subreddit):
     c = dbConn.cursor()
 
-    print(subscriber)
-    print(subscribedTo)
-    print(subreddit)
+    #print(subscriber)
+    #print(subscribedTo)
+    #print(subreddit)
     try:
         c.execute('''
                 INSERT INTO subscriptions
@@ -130,9 +130,8 @@ def is_marked(post):
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
         print(message.body)
+        message.body = message.body.replace(u'\xa0', u' ')
         parts = message.body.split(' ')
-        for part in parts:
-            part = part.decode('utf-8').split('\xa0')
         print(parts)
         if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
