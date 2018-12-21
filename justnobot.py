@@ -130,7 +130,7 @@ def get_messages():
         print(message.body)
         parts = message.body.split(' ')
         for part in parts:
-            part.striplines()
+            part = part.split('/n')
         if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
         elif message.subject == "Unsubscribe" and len(parts) > 2:
