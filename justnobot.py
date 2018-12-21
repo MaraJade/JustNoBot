@@ -120,9 +120,11 @@ def is_marked(post):
     c = dbConn.cursor()
 
     return c.execute('''
-            SELECT PostID
-            FROM marked_posts
-            WHERE PostID = ?
+            SELECT EXISTS (
+                SELECT PostID
+                FROM marked_posts
+                WHERE PostID = ?
+            )
     ''', (str(post),))
 
 def get_messages():
@@ -137,14 +139,14 @@ def get_messages():
             removeSubscriber(message.author, parts[1], parts[2])
 
         message.mark_read()
-        time.sleep(30)
+        time.sleep(10)
 
 def get_posts(subreddit):
     for post in subreddit.new(limit=100):
         print(is_marked(post))
         if duplicate_preventer(post):
             continue
-        elif post.author is not None and is_marked(post) is None:
+        elif post.author is not None and is_marked(post) == 0:
             history = []
             for link in post.author.submissions.new(limit=100):
                 if link.subreddit == subreddit.display_name:
@@ -174,7 +176,7 @@ def get_posts(subreddit):
                         break
 
                 if longer:
-                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str((post.author))))
+                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
 
             message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})".format(str((post.author)), BOT_NAME, str((post.author)), str((post.subreddit))))
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
