@@ -160,7 +160,7 @@ def get_posts(subreddit):
         elif post.author is not None and is_marked(post) == 0:
             history = []
             for link in post.author.submissions.new(limit=100):
-                if link.subreddit == subreddit.display_name:
+                if link.subreddit == subreddit.display_name and post.id != link.id:
                     history.append(link)
 
             message = ''            
