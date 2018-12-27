@@ -196,7 +196,7 @@ def get_posts(subreddit):
             message = message + "\n\n*I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
 
             print(post.locked)
-            if post.locked != True:
+            if post.locked != True and post.archived != True:
                 try:
                     comment = post.reply(message)
                     print("Post replied to")
@@ -214,7 +214,7 @@ def get_posts(subreddit):
                         print("Post marked")
                 if post.subreddit == "JUSTNOMIL":
                     comment.mod.distinguish(sticky=True)
-            else:
+            elif:
                 mark_post(post)
                 print("Post marked")
 
@@ -225,11 +225,11 @@ def get_posts(subreddit):
             if subscribers is not None:
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
-                    print(subscriber[0])
-                    print(post.author)
-                    print(unidecode(post.title))
-                    print(str(post.permalink))
-                    print(post.subreddit)
+                    #print(subscriber[0])
+                    #print(post.author)
+                    #print(unidecode(post.title))
+                    #print(str(post.permalink))
+                    #print(post.subreddit)
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
 
                     reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
