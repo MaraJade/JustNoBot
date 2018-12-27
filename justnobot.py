@@ -214,7 +214,7 @@ def get_posts(subreddit):
                         print("Post marked")
                 if post.subreddit == "JUSTNOMIL":
                     comment.mod.distinguish(sticky=True)
-            elif:
+            else:
                 mark_post(post)
                 print("Post marked")
 
