@@ -202,7 +202,7 @@ def get_posts(subreddit):
                     print("Post replied to")
                 except praw.exceptions.APIException as e:
                     print(e)
-                    time.sleep(60)
+                    time.sleep(10)
                     if e == "RATELIMIT: 'you are doing that too much. try again in 5 seconds.' on field 'ratelimit'":
                         try:
                             comment = post.reply(message)
@@ -218,7 +218,7 @@ def get_posts(subreddit):
                 mark_post(post)
                 print("Post marked")
 
-            time.sleep(30)
+            time.sleep(10)
 
             subscribers = dbsearch(post.author, post.subreddit)
 
@@ -235,7 +235,7 @@ def get_posts(subreddit):
                     reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
                     print("Subsriber notified")
 
-                    time.sleep(30)
+                    time.sleep(10)
 
 
 if __name__ == '__main__':
