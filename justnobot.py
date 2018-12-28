@@ -152,14 +152,14 @@ def get_messages():
             addSubscriber(message.author, parts[1], parts[2])
 
             subject = "Successfully subscribed to {}".format(parts[1])
-            body = "You have successfully been subscribed to {} in {}! I will notify you whenever they post.".format(parts[1], parts[2])
+            body = "You have successfully been subscribed to {} in {}! I will notify you whenever they post.".format(str(parts[1]), str(parts[2]))
 
             reddit.redditor(message.author).message(subject=subject, message=body) 
         elif message.subject == "Unsubscribe" and len(parts) > 2:
             removeSubscriber(message.author, parts[1], parts[2])
 
             subject = "Successfully unsubscribed from {}".format(parts[1])
-            body = "You have successfully been unsubscribed from {} in {}! You will no longer be notified when they post.".format(parts[1], parts[2])
+            body = "You have successfully been unsubscribed from {} in {}! You will no longer be notified when they post.".format(str(parts[1]), str(parts[2]))
 
             reddit.redditor(message.author).message(subject=subject, message=body) 
 
