@@ -188,7 +188,7 @@ def get_posts(subreddit):
                 welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
                 if subreddit == "JUSTNOMIL":
                     message = MIL_RULES + welcome
-                elif subreddt == "Justnofil":
+                elif subreddit == "Justnofil":
                     message = FIL_RULES + welcome
                 elif subreddit == "LetterstoJNMIL":
                     message = LETTER_RULES + welcome
