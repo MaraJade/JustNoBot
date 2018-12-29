@@ -161,7 +161,7 @@ def get_messages():
             subject = "Successfully unsubscribed from {}".format(parts[1])
             body = "You have successfully been unsubscribed from {} in {}! You will no longer be notified when they post.".format(str(parts[1]), str(parts[2]))
 
-            reddit.redditor(message.author).message(subject=subject, message=body) 
+            reddit.redditor(str(message.author)).message(subject=subject, message=body) 
 
         message.mark_read()
         time.sleep(10)
