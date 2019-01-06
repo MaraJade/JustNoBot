@@ -189,7 +189,7 @@ def get_posts(subreddit):
 
                 count = 0
                 longer = False
-                for entry in history:
+                for entry in history[1:]:
                     message = message + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
                     count = count + 1 
                     if count == 10:
