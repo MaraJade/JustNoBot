@@ -9,7 +9,7 @@ USER_AGENT = "bot1"
 BOT_NAME = "TheJustNoBot" 
 DATABASE = "justno.db"
 
-MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics)  | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory) | [Worst Wiki](https://www.reddit.com/r/JUSTNOMIL/wiki/worst)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?sort=new&restrict_sr=on&q=flair%3AMIL%2Bin%2Bthe%2Bwild) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n [Fear mongering new posters will result in a temp ban.](https://www.reddit.com/r/JUSTNOMIL/comments/8z73mv/who_loves_a_pie_chart_i_do_i_do_survey_results/e2glikt/)\n\n Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)\n\n******\n\n"
+MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics) | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory) | [Worst Wiki](https://www.reddit.com/r/JUSTNOMIL/wiki/worst)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?q=flair_name%3A%22MIL%20in%20the%20wild%22&restrict_sr=1) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n Fear mongering new posters will result in a temp ban.\n\n Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)\n\n******\n\n"
 
 FIL_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/Justnofil/about/rules/) of this subreddit.\n\n If you are in need of urgent help, there is also a link to crisis resources at the sidebar on the right, or click [here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources) if you're on mobile.\n\n For tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself) if you're on mobile.\n\n******\n\n"
 
@@ -125,14 +125,6 @@ def mark_post(post):
 def is_marked(post):
     c = dbConn.cursor()
 
-    #return c.execute('''
-    #        SELECT EXISTS (
-    #            SELECT PostID
-    #            FROM marked_posts
-    #            WHERE PostID = ?
-    #        )
-    #''', (str(post),))
-
     c.execute('''
             SELECT count (*)
             FROM marked_posts
@@ -207,7 +199,7 @@ def get_posts(subreddit):
                 if longer:
                     message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
 
-            message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject Subscribe and body Subscribe {} {})".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
+            message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject\n\nSubscribe\n\nand body\n\nSubscribe {} {})\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
 
 
@@ -230,8 +222,8 @@ def get_posts(subreddit):
                     elif e == "TOO_OLD: 'that's a piece of history now; it's too late to reply to it' on field 'parent'":
                         mark_post(post)
                         print("Post marked")
-                if post.subreddit != "JUSTNOFAMILY":
-                    comment.mod.distinguish(sticky=True)
+
+                comment.mod.distinguish(sticky=True)
             else:
                 mark_post(post)
                 print("Post marked")
