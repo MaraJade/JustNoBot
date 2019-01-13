@@ -242,8 +242,12 @@ def get_posts(subreddit):
                     #print(post.subreddit)
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
 
-                    reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
-                    print("Subsriber notified")
+                    try:
+                        reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
+                        print("Subsriber notified")
+                    except praw.exceptions.APIException as e:
+                            print(e)
+
 
                     time.sleep(10)
 
