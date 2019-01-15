@@ -9,11 +9,11 @@ USER_AGENT = "bot1"
 BOT_NAME = "TheJustNoBot" 
 DATABASE = "justno.db"
 
-MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics) | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?q=flair_name%3A%22MIL%20in%20the%20wild%22&restrict_sr=1) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n Fear mongering new posters will result in a temp ban.\n\n Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)\n\n******\n\n"
+MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics) | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?q=flair_name%3A%22MIL%20in%20the%20wild%22&restrict_sr=1) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n Fear mongering new posters will result in a temp ban.\n\n Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)\n\n"
 
-FIL_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/Justnofil/about/rules/) of this subreddit.\n\n If you are in need of urgent help, there is also a link to crisis resources at the sidebar on the right, or click [here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources) if you're on mobile.\n\n For tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself) if you're on mobile.\n\n******\n\n"
+FIL_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/Justnofil/about/rules/) of this subreddit.\n\n If you are in need of urgent help, there is also a link to crisis resources at the sidebar on the right, or click [here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources) if you're on mobile.\n\n For tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself) if you're on mobile.\n\n"
 
-LETTER_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/LetterstoJNMIL/about/rules/) of this subreddit.\n\n******\n\n"
+OTHER_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/LetterstoJNMIL/about/rules/) of this subreddit.\n\n"
 
 def dbinit():
     global dbConn
@@ -171,21 +171,16 @@ def get_posts(subreddit):
 
             message = ''            
             if len(history) <= 1:
-                welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
-                if subreddit == "JUSTNOMIL":
-                    message = MIL_RULES + welcome
-                else:
-                    message = welcome
+                welcome = "The posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n******\n\nWelcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
             else:
                 welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
-                if subreddit == "JUSTNOMIL":
-                    message = MIL_RULES + welcome
-                elif subreddit == "Justnofil":
-                    message = FIL_RULES + welcome
-                elif subreddit == "LetterstoJNMIL":
-                    message = LETTER_RULES + welcome
-                else:
-                    message = welcome
+
+            if subreddit == "JUSTNOMIL":
+                message = MIL_RULES + welcome
+            elif subreddit == "Justnofil":
+                message = FIL_RULES + welcome
+            else:
+                message = OTHER_RULES + welcome
 
                 count = 0
                 longer = False
