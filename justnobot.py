@@ -182,17 +182,17 @@ def get_posts(subreddit):
             else:
                 message = OTHER_RULES + welcome
 
-                count = 0
-                longer = False
-                for entry in history[1:]:
-                    message = message + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
-                    count = count + 1 
-                    if count == 10:
-                        longer = True
-                        break
+            count = 0
+            longer = False
+            for entry in history[1:]:
+                message = message + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
+                count = count + 1 
+                if count == 10:
+                    longer = True
+                    break
 
-                if longer:
-                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
+            if longer:
+                message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
 
             message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject)\n\n^Subscribe\n\n^and ^body\n\n^Subscribe ^{} ^{}\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
