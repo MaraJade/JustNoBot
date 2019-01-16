@@ -61,9 +61,6 @@ def dbsearch(poster, subreddit):
 def addSubscriber(subscriber, subscribedTo, subreddit):
     c = dbConn.cursor()
 
-    #print(subscriber)
-    #print(subscribedTo)
-    #print(subreddit)
     try:
         c.execute('''
                 INSERT INTO subscriptions
@@ -187,7 +184,7 @@ def get_posts(subreddit):
             else:
                 welcome = "The posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n******\n\nOther posts from /u/{}:\n\n\n".format(str((post.author)))
 
-                messsage = sub_message(welcome, subreddit)
+                message = sub_message(welcome, subreddit)
 
                 count = 0
                 longer = False
