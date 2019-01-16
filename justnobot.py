@@ -158,6 +158,16 @@ def get_messages():
         message.mark_read()
         time.sleep(10)
 
+def sub_message(welcome, subreddit):
+    if subreddit == "JUSTNOMIL":
+        message = MIL_RULES + welcome
+    elif subreddit == "Justnofil":
+        message = FIL_RULES + welcome
+    else:
+        message = OTHER_RULES + welcome
+
+    return message
+
 def get_posts(subreddit):
     for post in subreddit.new(limit=100):
         print(is_marked(post))
@@ -172,27 +182,24 @@ def get_posts(subreddit):
             message = ''            
             if len(history) <= 1:
                 welcome = "The posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n******\n\nWelcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
+
+                message = sub_message(welcome, subreddit)
             else:
-                welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
+                welcome = "The posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n******\n\nOther posts from /u/{}:\n\n\n".format(str((post.author)))
 
-            if subreddit == "JUSTNOMIL":
-                message = MIL_RULES + welcome
-            elif subreddit == "Justnofil":
-                message = FIL_RULES + welcome
-            else:
-                message = OTHER_RULES + welcome
+                messsage = sub_message(welcome, subreddit)
 
-            count = 0
-            longer = False
-            for entry in history[1:]:
-                message = message + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
-                count = count + 1 
-                if count == 10:
-                    longer = True
-                    break
+                count = 0
+                longer = False
+                for entry in history[1:]:
+                    message = message + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
+                    count = count + 1 
+                    if count == 10:
+                        longer = True
+                        break
 
-            if longer:
-                message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
+                if longer:
+                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
 
             message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject)\n\n^Subscribe\n\n^and ^body\n\n^Subscribe ^{} ^{}\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
             #message = message + ("^(Subscriptions are in progress. Please stand by)")
@@ -230,11 +237,6 @@ def get_posts(subreddit):
             if subscribers is not None:
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
-                    #print(subscriber[0])
-                    #print(post.author)
-                    #print(unidecode(post.title))
-                    #print(str(post.permalink))
-                    #print(post.subreddit)
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
 
                     try:
