@@ -88,13 +88,6 @@ def removeSubscriber(subscriber, subscribedTo, subreddit):
     else:
         return False
 
-def duplicate_preventer(post):
-    for comment in list(post.comments):
-        if comment.author == BOT_NAME:
-            return True
-
-    return False
-
 def mark_post(post):
     c = dbConn.cursor()
 
@@ -124,13 +117,18 @@ def is_marked(post):
 
     return c.fetchone()[0]
 
+def duplicate_preventer(post):
+    for comment in list(post.comments):
+        if comment.author == BOT_NAME:
+            return True
+
+    return False
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
-        message.body = message.body.replace(u'\xa0', u' ')
         print(message.body.encode('utf-8'))
+        message.body = message.body.replace(u'\xa0', u' ')
         parts = message.body.split(' ')
-        #print(parts)
         if message.subject == "Subscribe" and len(parts) > 2:
             addSubscriber(message.author, parts[1], parts[2])
 
@@ -204,7 +202,8 @@ def get_posts(subreddit):
                         mark_post(post)
                         print("Post marked")
 
-                comment.mod.distinguish(sticky=True)
+                if post.comments[0].stickied != true:
+                    comment.mod.distinguish(sticky=True)
             else:
                 mark_post(post)
                 print("Post marked")
