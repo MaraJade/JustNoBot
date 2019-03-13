@@ -9,12 +9,6 @@ USER_AGENT = "bot1"
 BOT_NAME = "TheJustNoBot" 
 DATABASE = "justno.db"
 
-MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics) | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?q=flair_name%3A%22MIL%20in%20the%20wild%22&restrict_sr=1) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n Fear mongering new posters will result in a temp ban.\n\n"
-
-FIL_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/Justnofil/about/rules/) of this subreddit.\n\n If you are in need of urgent help, there is also a link to crisis resources at the sidebar on the right, or click [here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources) if you're on mobile.\n\n For tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself) if you're on mobile.\n\n"
-
-OTHER_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/LetterstoJNMIL/about/rules/) of this subreddit.\n\n"
-
 def dbinit():
     global dbConn
     dbConn = sqlite3.connect(DATABASE)
@@ -134,7 +128,7 @@ def is_marked(post):
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
         message.body = message.body.replace(u'\xa0', u' ')
-        print(message.body)
+        print(message.body.encode('utf-8'))
         parts = message.body.split(' ')
         #print(parts)
         if message.subject == "Subscribe" and len(parts) > 2:
@@ -153,26 +147,10 @@ def get_messages():
             reddit.redditor(str(message.author)).message(subject=subject, message=body) 
 
         message.mark_read()
-        time.sleep(10)
-
-def sub_message(welcome, subreddit):
-    if subreddit == "JUSTNOMIL":
-        message = MIL_RULES + welcome
-    elif subreddit == "Justnofil":
-        message = FIL_RULES + welcome
-    else:
-        message = OTHER_RULES + welcome
-
-    return message
+        time.sleep(5)
 
 def get_posts(subreddit):
-    all_rules = "**Quick Rules Guide**\n\n[Acronym Index](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) | [JN nickname policy](https://www.reddit.com/r/{}/wiki/index#wiki_2._nicknames) | [No shaming](https://www.reddit.com/r/{}/wiki/index#wiki_4._shaming_is_not_okay)\n---|---|---\n[Report rulebreaking](https://www.reddit.com/r/{}/wiki/index#wiki_6._no_backseat_modding) | [JN Book List](https://www.reddit.com/r/{}/wiki/books) | [Report PM Trolls](https://www.reddit.com/r/{}/wiki/trolls)\n\nNO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\nResist the urge to share your armchair diagnoses or have your comment removed.\n\n**Fear mongering new posters will result in an automatic 2 day ban.**\n\nThe posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n**Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)**\n\n[More Crisis Resources Here](https://www.reddit.com/r/{}/wiki/crisis-resources)\n\nFor tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/{}/wiki/protecting-yourself)\n\n******\n\n".format(subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit)
-
-    MIL_RULES = "**Quick Rules Guide**\n\n [Acronym index](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_acronym_dictionary) | [MIL in the Wild guide](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_mil_in_the_wild_rules) | [JNM nickname policy](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_2._nicknames_are_for_mils.2Fmoms_only)\n\n [No shaming](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_4._shaming_is_not_okay) | [1 post per day](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_10._one_post_per_day) | [Report rulebreaking](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_6._no_backseat_modding) | [MILuminati](https://ml.reddit.com/r/JUSTNOMIL)\n\n [JNM Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [MILimination Tactics](https://www.reddit.com/r/JUSTNOMIL/wiki/milimination_tactics) | [Hall o MILs](https://www.reddit.com/r/JUSTNOMIL/wiki/directory)\n\n [MILITW Only](https://www.reddit.com/r/JUSTNOMIL/search?q=flair_name%3A%22MIL%20in%20the%20wild%22&restrict_sr=1) | [JNM Without MILITW](https://www.reddit.com/r/JUSTNOMIL/search?q=NOT+MIL%2Bin%2Bthe%2Bwild&restrict_sr=on&sort=new&t=all) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n NO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n Resist the urge to share your armchair diagnoses or have your comment removed.\n\n Fear mongering new posters will result in a temp ban.\n\n"
-
-    FIL_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/Justnofil/about/rules/) of this subreddit.\n\n If you are in need of urgent help, there is also a link to crisis resources at the sidebar on the right, or click [here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources) if you're on mobile.\n\n For tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself) if you're on mobile.\n\n"
-
-    OTHER_RULES = "This is just a general reminder to all to adhere to [reddiquette](https://www.reddit.com/wiki/reddiquette) and to the [rules](https://www.reddit.com/r/LetterstoJNMIL/about/rules/) of this subreddit.\n\n"
+    all_rules = "**Quick Rules Guide**\n\n[Acronym Index](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) | [JN nickname policy](https://www.reddit.com/r/{}/wiki/index#wiki_2._nicknames) | [No shaming](https://www.reddit.com/r/{}/wiki/index#wiki_3._no_shaming.3B_be_supportive)\n---|---|---\n[Report rulebreaking](https://www.reddit.com/r/{}/wiki/index#wiki_6._no_backseat_modding) | [JN Book List](https://www.reddit.com/r/{}/wiki/books) | [Report PM Trolls](https://www.reddit.com/r/{}/wiki/trolls)\n\nNO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\nResist the urge to share your armchair diagnoses or have your comment removed.\n\n**Fear mongering new posters will result in an automatic 2 day ban.**\n\nThe posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n**Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)**\n\n[More Crisis Resources Here](https://www.reddit.com/r/{}/wiki/crisis-resources)\n\nFor tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/{}/wiki/protecting-yourself)\n\n******\n\n^(Not all links are working properly, sorry)\n\n********\n\n".format(subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit)
 
     for post in subreddit.new(limit=100):
         print(is_marked(post))
@@ -187,33 +165,26 @@ def get_posts(subreddit):
             message = ''            
             if len(history) <= 1:
                 welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
-
-                message = sub_message(welcome, subreddit)
             else:
                 welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
-
-                message = sub_message(welcome, subreddit)
 
                 count = 0
                 longer = False
                 for entry in history[1:]:
-                    message = message + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
+                    welcome = welcome + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
                     count = count + 1 
                     if count == 10:
                         longer = True
                         break
 
                 if longer:
-                    message = message + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
+                    welcome = welcome + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
 
-            message = message + ("\n\n*****\n\n\n\n^(To be notified as soon as
-                    {} posts an update) [^click
-                    ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe
-                            {} {})\n\n^(If the link is not visible or doesn't
-                                    work, send me a message with the
-                                    subject:)\n\n\tSubscribe\n\n^and ^body\n\n\tSubscribe {} {}\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
+            update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject:)\n\n\tSubscribe\n\n^and ^body\n\n\tSubscribe {} {}\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
-            message = message + "\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
+            bot = "\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
+
+            message = all_rules + welcome + update + bot
 
             print(post.locked)
             if post.locked != True and post.archived != True:
@@ -222,7 +193,7 @@ def get_posts(subreddit):
                     print("Post replied to")
                 except praw.exceptions.APIException as e:
                     print(e)
-                    time.sleep(10)
+                    time.sleep(5)
                     if e == "RATELIMIT: 'you are doing that too much. try again in 5 seconds.' on field 'ratelimit'":
                         try:
                             comment = post.reply(message)
@@ -238,7 +209,7 @@ def get_posts(subreddit):
                 mark_post(post)
                 print("Post marked")
 
-            time.sleep(10)
+            time.sleep(5)
 
             subscribers = dbsearch(post.author, post.subreddit)
 
@@ -253,8 +224,7 @@ def get_posts(subreddit):
                     except praw.exceptions.APIException as e:
                             print(e)
 
-
-                    time.sleep(10)
+                    time.sleep(5)
 
 
 if __name__ == '__main__':
