@@ -205,7 +205,11 @@ def get_posts(subreddit):
                         print("Post marked")
 
                 if sticky[0] == False:
-                    comment.mod.distinguish(sticky=True)
+		    try:
+		        comment.mod.distinguish(sticky=True)
+		    except praw.exceptions.Forbidden as e:
+			print(e)
+			
             else:
                 mark_post(post)
                 print("Post marked")
