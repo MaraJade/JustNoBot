@@ -206,9 +206,9 @@ def get_posts(subreddit):
 
                 if sticky[0] == False:
 		    try:
-		        comment.mod.distinguish(sticky=True)
-		    except praw.exceptions.Forbidden as e:
-			print(e)
+		        exception = comment.mod.distinguish(sticky=True)
+		    except:
+			print(exception)
 			
             else:
                 mark_post(post)
@@ -240,7 +240,7 @@ if __name__ == '__main__':
 
     reddit = praw.Reddit(USER_AGENT)
 
-    subs = ["Justnofil", "JustNoSO", "JustNoFriends", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL", "JUSTNOMIL"]
+    subs = ["Justnofil", "JustNoSO", "JustNoFriend", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL", "JUSTNOMIL"]
     while True:
         get_messages()
         print("Messages gotten, getting posts")
