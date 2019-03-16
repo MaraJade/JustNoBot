@@ -182,7 +182,7 @@ def get_posts(subreddit):
 
             update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject:)\n\n\tSubscribe\n\n^and ^body\n\n\tSubscribe {} {}\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
-            bot = "\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
+            bot = "\n\n*I am a **bot**, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns. Messaging/chatting me will not accomplish anything, please stop trying.*\n\n".format(post.subreddit)
 
             message = all_rules + welcome + update + bot
 
