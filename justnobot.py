@@ -116,12 +116,15 @@ def is_marked(post):
 
     return c.fetchone()[0]
 
-def duplicate_preventer(post):
+def sticky_checker(post):
     for comment in list(post.comments):
-        if comment.author == BOT_NAME:
-            return True
+        if comment.stickied == True:
+            if comment.author == BOT_NAME:
+                return (True, True)
+            else:
+                return (True, False)
 
-    return False
+    return (False, False)
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
@@ -150,8 +153,8 @@ def get_posts(subreddit):
     all_rules = "**Quick Rules Guide**\n\n[Acronym Index](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) | [JN nickname policy](https://www.reddit.com/r/{}/wiki/index#wiki_2._nicknames) | [No shaming](https://www.reddit.com/r/{}/wiki/index#wiki_3._no_shaming.3B_be_supportive)\n---|---|---\n[Report rulebreaking](https://www.reddit.com/r/{}/wiki/index#wiki_5._no_backseat_modding) | [JN Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [Report PM Trolls](https://www.reddit.com/r/{}/wiki/trolls)\n\nNO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\nResist the urge to share your armchair diagnoses or have your comment removed.\n\n**Fear mongering new posters will result in an automatic 2 day ban.**\n\nThe posting of political information/topics whatsoever is against the rules without receiving a prior approval from the mod team via Modmail. Any variation from this can result in a permanent ban.\n\n**Crisis Resources [U.S.](https://suicidepreventionlifeline.org/) | [U.K.](https://www.samaritans.org/how-we-can-help-you) | [Australia](https://www.lifeline.org.au/get-help/get-help-home) | [Canada](https://suicideprevention.ca/need-help/) | [Denmark](https://www.livslinien.dk/)**\n\n[More Crisis Resources Here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources)\n\nFor tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself)\n\n******\n\n^(Not all links are working properly, sorry)\n\n********\n\n".format(subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit)
 
     for post in subreddit.new(limit=100):
-        print(is_marked(post))
-        if duplicate_preventer(post):
+        sticky = sticky_checker(post)
+        if sticky[1]:
             continue
         elif post.author is not None and is_marked(post) == 0:
             history = []
@@ -201,7 +204,7 @@ def get_posts(subreddit):
                         mark_post(post)
                         print("Post marked")
 
-                if post.comments[0].stickied != True:
+                if sticky[0] == False:
                     comment.mod.distinguish(sticky=True)
             else:
                 mark_post(post)
