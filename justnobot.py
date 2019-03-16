@@ -201,7 +201,7 @@ def get_posts(subreddit):
                         mark_post(post)
                         print("Post marked")
 
-                if post.comments[0].stickied != true:
+                if post.comments[0].stickied != True:
                     comment.mod.distinguish(sticky=True)
             else:
                 mark_post(post)
