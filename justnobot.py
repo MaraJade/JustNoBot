@@ -3,7 +3,6 @@ import praw
 import time
 import string
 import sqlite3
-from unidecode import unidecode
 
 USER_AGENT = "bot1"
 BOT_NAME = "TheJustNoBot" 
