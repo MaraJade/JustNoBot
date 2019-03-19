@@ -154,7 +154,7 @@ def get_posts(subreddit):
 
     for post in subreddit.new(limit=100):
         sticky = sticky_checker(post)
-        if sticky[1]:
+        if sticky[1] == True:
             continue
         elif post.author is not None and is_marked(post) == 0:
             history = []
@@ -186,7 +186,6 @@ def get_posts(subreddit):
 
             message = all_rules + welcome + update + bot
 
-            print(post.locked)
             if post.locked != True and post.archived != True:
                 try:
                     comment = post.reply(message)
@@ -219,6 +218,8 @@ def get_posts(subreddit):
             time.sleep(5)
 
             subscribers = dbsearch(post.author, post.subreddit)
+            print("Subscribers: ")
+            print(subscribers)
 
             if subscribers is not None:
                 print("Subscribers gotten")
@@ -230,7 +231,7 @@ def get_posts(subreddit):
                         reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
                         print("Subsriber notified")
                     except praw.exceptions.APIException as e:
-                            print(e)
+                        print(e)
 
                     time.sleep(5)
 
