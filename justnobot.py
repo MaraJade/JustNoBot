@@ -119,9 +119,9 @@ def is_marked(post):
 def sticky_checker(post):
     for comment in list(post.comments):
         # Switch statement?
-        if comment.stickied == True and comment.author == BOT_NAME:
+        if comment.author == BOT_NAME and comment.stickied == True:
             return (True, True)
-        elif comment.stickied != True and comment.author == BOT_NAME:
+        elif comment.author == BOT_NAME and comment.stickied != True:
             return (False, True)
 
     return (False, False)
@@ -190,7 +190,7 @@ def get_posts(subreddit):
             if post.locked != True and post.archived != True:
                 try:
                     comment = post.reply(message)
-                    print("Post replied to")
+                    print("Replied to {}".format(post.author))
                 except praw.exceptions.APIException as e:
                     print(e)
                     time.sleep(5)
@@ -209,6 +209,8 @@ def get_posts(subreddit):
 		        exception = comment.mod.distinguish(sticky=True)
 		    except:
 			print(exception)
+                else:
+                    comment.mod.distinguish()
 			
             else:
                 mark_post(post)
@@ -219,6 +221,7 @@ def get_posts(subreddit):
             subscribers = dbsearch(post.author, post.subreddit)
 
             if subscribers is not None:
+                print("Subscribers gotten")
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
