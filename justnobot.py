@@ -218,18 +218,17 @@ def get_posts(subreddit):
             time.sleep(5)
 
             subscribers = dbsearch(post.author, post.subreddit)
-            print("Subscribers: ")
-            print(subscribers)
 
             if subscribers is not None:
                 print("Subscribers gotten")
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
+                    print(subscriber)
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
 
                     try:
                         reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
-                        print("Subsriber notified")
+                        print("{} notified".format(subscriber))
                     except praw.exceptions.APIException as e:
                         print(e)
 
