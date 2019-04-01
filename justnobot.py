@@ -164,7 +164,10 @@ def get_posts(subreddit):
 
             message = ''            
             if len(history) <= 1:
-                welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
+                if subreddit.display_name == "JUSTNOMIL":
+                    welcome = "Welcome to /r/JustNoHuman!\n\nI'm JustNoBot. I help people follow your posts!\n\n"
+                else:
+                    welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
             else:
                 welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
 
@@ -223,7 +226,6 @@ def get_posts(subreddit):
                 print("Subscribers gotten")
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
-                    print(subscriber)
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
 
                     try:
