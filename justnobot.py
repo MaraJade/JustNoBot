@@ -164,10 +164,7 @@ def get_posts(subreddit):
 
             message = ''            
             if len(history) <= 1:
-                if subreddit.display_name == "JUSTNOMIL":
-                    welcome = "Welcome to /r/JustNoHuman!\n\nI'm JustNoBot. I help people follow your posts!\n\n"
-                else:
-                    welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
+                welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
             else:
                 welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
 
