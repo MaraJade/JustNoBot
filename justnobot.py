@@ -128,7 +128,7 @@ def sticky_checker(post):
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
-        print(message.body.encode('utf-8'))
+        print(message.body)
         message.body = message.body.replace(u'\xa0', u' ')
         parts = message.body.split(' ')
         if message.subject == "Subscribe" and len(parts) > 2:
@@ -171,7 +171,7 @@ def get_posts(subreddit):
                 count = 0
                 longer = False
                 for entry in history[1:]:
-                    welcome = welcome + ("* [{}]({})\n\n".format(str((entry.title).encode('utf-8')), str((entry.permalink).encode('utf-8'))))
+                    welcome = welcome + ("* [{}]({})\n\n".format(str((entry.title)), str((entry.permalink))))
                     count = count + 1 
                     if count == 10:
                         longer = True
@@ -204,13 +204,13 @@ def get_posts(subreddit):
                         print("Post marked")
 
                 if sticky[0] == False:
-		    try:
-		        exception = comment.mod.distinguish(sticky=True)
-		    except:
-			print(exception)
+                    try:
+                        exception = comment.mod.distinguish(sticky=True)
+                    except:
+                        print(exception)
                 else:
                     comment.mod.distinguish()
-			
+
             else:
                 mark_post(post)
                 print("Post marked")
@@ -223,7 +223,7 @@ def get_posts(subreddit):
                 print("Subscribers gotten")
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
-                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title).encode('utf-8')), str((post.permalink).encode('utf-8')), BOT_NAME, post.author, str((post.subreddit)))
+                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title)), str((post.permalink)), BOT_NAME, post.author, str((post.subreddit)))
 
                     try:
                         reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
