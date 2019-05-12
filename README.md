@@ -49,7 +49,14 @@ If you want to run the bot yourself, follow these steps:
 * Copy praw.ini.sample to praw.ini, and enter your login information, as well as
   the secrets you now have from creating the app.
 
-* Run the bot! python3 justnobot.py
+* Run the bot! `python3 justnobot.py`
+
+# How to contribute
+
+Contributions are welcome! If you have an idea for a feature, or want to fix a
+bug, feel free to fork and create a pull request! If you are uncertain on how to
+do that, Github has guides for you at
+https://help.github.com/en/articles/creating-a-pull-request!
 
 # PSA
 
