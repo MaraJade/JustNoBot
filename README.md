@@ -19,7 +19,7 @@ an OP.
 in. This will be updated in the future to allow users to subscribe to OPs
 across the network, with an option to retain the original usage.
 
-# Requirements
+## Requirements
 
 * Python 3
 
@@ -29,7 +29,7 @@ across the network, with an option to retain the original usage.
 
 * Sqlite3
 
-# Development
+## Development
 
 If you want to run the bot yourself, follow these steps:
 
@@ -51,7 +51,7 @@ If you want to run the bot yourself, follow these steps:
 
 * Run the bot! `python3 justnobot.py`
 
-# How to contribute
+## How to contribute
 
 Contributions are welcome! If you have an idea for a feature, or want to fix a
 bug, feel free to fork and create a pull request! If you are uncertain on how to
