@@ -119,14 +119,27 @@ def is_marked(post):
 def sticky_checker(post):
     for comment in list(post.comments):
         # Switch statement?
-        if comment.author == BOT_NAME and comment.stickied == True:
-            return (True, True)
-        elif comment.author == BOT_NAME and comment.stickied != True:
-            return (True, False)
-        elif comment.author != BOT_NAME and comment.stickied == True:
-            return (False, True)
+        #if comment.author == BOT_NAME and comment.stickied == True:
+        #    return (True, True)
+        #elif comment.author == BOT_NAME and comment.stickied != True:
+        #    return (True, False)
+        #elif comment.author != BOT_NAME and comment.stickied == True:
+        #    return (False, True)
 
-    return (False, False)
+        if comment.author == BOT_NAME:
+            bot = True
+            if comment.stickied == True:
+                stickied = True
+            else:
+                stickied = False
+        elif comment.author != BOT_NAME:
+            bot = false
+            if comment.stickied == True:
+                stickied = True
+            else:
+                stickied = False
+
+    return (bot, stickied)
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
@@ -156,6 +169,7 @@ def get_posts(subreddit):
 
     for post in subreddit.new(limit=100):
         sticky = sticky_checker(post)
+        #print(sticky)
         if sticky[0] == True:
             continue
         elif post.author is not None and is_marked(post) == 0:
