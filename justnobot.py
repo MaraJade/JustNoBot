@@ -117,6 +117,8 @@ def is_marked(post):
     return c.fetchone()[0]
 
 def sticky_checker(post):
+    bot = False
+    stickied = False
     for comment in list(post.comments):
         # Switch statement?
         #if comment.author == BOT_NAME and comment.stickied == True:
@@ -130,14 +132,10 @@ def sticky_checker(post):
             bot = True
             if comment.stickied == True:
                 stickied = True
-            else:
-                stickied = False
+            return (bot, stickied)
         elif comment.author != BOT_NAME:
-            bot = False
             if comment.stickied == True:
                 stickied = True
-            else:
-                stickied = False
 
     return (bot, stickied)
 
