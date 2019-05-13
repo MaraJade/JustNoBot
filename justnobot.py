@@ -122,7 +122,7 @@ def sticky_checker(post):
         if comment.author == BOT_NAME and comment.stickied == True:
             return (True, True)
         elif comment.author == BOT_NAME and comment.stickied != True:
-            return (False, True)
+            return (True, False)
 
     return (False, False)
 
