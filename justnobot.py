@@ -123,6 +123,8 @@ def sticky_checker(post):
             return (True, True)
         elif comment.author == BOT_NAME and comment.stickied != True:
             return (True, False)
+        elif comment.author != BOT_NAME and comment.stickied == True:
+            return (False, True)
 
     return (False, False)
 
@@ -150,13 +152,11 @@ def get_messages():
         time.sleep(5)
 
 def get_posts(subreddit):
-    #all_rules = "**Quick Rules Guide**\n\n [Acronym Index](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) | [JN nickname policy](https://www.reddit.com/r/{}/wiki/index#wiki_2._nicknames)\n---|---\n [JN Book List](https://www.reddit.com/r/JUSTNOMIL/wiki/books) | [Report PM Trolls](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n [**Full Rules**](https://www.reddit.com/r/{}/wiki/index#wiki_rules)\n\nNO CONTACT! or DIVORCE! is generally not good advice and will be removed.\n\n**Crisis Resources**\n\n[Websites](https://www.telefonseelsorge.de/?q=node/7651)\n\n[Hotlines](https://en.wikipedia.org/wiki/List_of_suicide_crisis_lines)\n\n\n\n [More Crisis Resources Here](https://www.reddit.com/r/Justnofil/wiki/crisis-resources)\n\nFor tips protecting yourself, the resources are also on the sidebar on the right or click [here](https://www.reddit.com/r/Justnofil/wiki/protecting-yourself)\n\n******\n\n^(The bot and wikis are currently under construction, please bear with us until things are settled)\n\n********\n\n".format(subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit, subreddit)
-
     all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_post_flair_guide)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n**^(Resources:)** [^(In Crisis?)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_crisis_resources) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JUSTNOMIL/wiki/books) ^(|) [^(Our Wiki)](https://www.reddit.com/r/{}/wiki/)\n\n".format(subreddit, subreddit, subreddit)
 
     for post in subreddit.new(limit=100):
         sticky = sticky_checker(post)
-        if sticky[1] == True:
+        if sticky[0] == True:
             continue
         elif post.author is not None and is_marked(post) == 0:
             history = []
@@ -182,7 +182,6 @@ def get_posts(subreddit):
                 if longer:
                     welcome = welcome + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
 
-            #update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n\n^(If the link is not visible or doesn't work, send me a message with the subject:)\n\n\tSubscribe\n\n^and ^body\n\n\tSubscribe {} {}\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
             update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(| For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
             bot = "\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
@@ -206,7 +205,7 @@ def get_posts(subreddit):
                         mark_post(post)
                         print("Post marked")
 
-                if sticky[0] == False:
+                if sticky[1] == False:
                     try:
                         exception = comment.mod.distinguish(sticky=True)
                     except:
@@ -245,7 +244,7 @@ if __name__ == '__main__':
 
     reddit = praw.Reddit(USER_AGENT)
 
-    subs = ["Justnofil", "JustNoSO", "JustNoFriend", "JustNoFamFiction", "JUSTNOFAMILY", "LetterstoJNMIL", "JustNoDIL", "JUSTNOMIL"]
+    subs = ["Justnofil", "JustNoSO", "JustNoFriend", "JustNoFamFiction", "JUSTNOFAMILY", "JustNoDIL", "JUSTNOMIL"]
     while True:
         get_messages()
         print("Messages gotten, getting posts")
