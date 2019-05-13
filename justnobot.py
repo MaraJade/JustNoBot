@@ -168,9 +168,9 @@ def get_posts(subreddit):
     for post in subreddit.new(limit=100):
         sticky = sticky_checker(post)
         #print(sticky)
-        if sticky[0] == True:
-            continue
-        elif post.author is not None and is_marked(post) == 0:
+        #if sticky[0] == True:
+            #continue
+        if post.author is not None and is_marked(post) == 0 and sticky[0] == False:
             history = []
             for link in post.author.submissions.new(limit=100):
                 if link.subreddit == subreddit.display_name:
