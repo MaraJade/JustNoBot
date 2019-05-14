@@ -233,8 +233,8 @@ def get_posts(subreddit):
 
             subscribers = dbsearch(post.author, post.subreddit)
 
+            # This doesn't actually do anything
             if subscribers is not None:
-                print("Subscribers gotten")
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
                     body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title)), str((post.permalink)), BOT_NAME, post.author, str((post.subreddit)))
@@ -256,7 +256,8 @@ if __name__ == '__main__':
 
     reddit = praw.Reddit(USER_AGENT)
 
-    subs = ["Justnofil", "JustNoSO", "JustNoFriend", "JustNoFamFiction", "JUSTNOFAMILY", "JustNoDIL", "JUSTNOMIL"]
+    # Don't forget to put JustNoFriend back
+    subs = ["Justnofil", "JustNoSO", "JustNoFamFiction", "JUSTNOFAMILY", "JustNoDIL", "JUSTNOMIL"]
     while True:
         get_messages()
         print("Messages gotten, getting posts")
