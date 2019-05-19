@@ -151,6 +151,7 @@ def sticky_checker(post):
 
 def get_messages():
     for message in reddit.inbox.unread(limit=100):
+        print(message.author)
         print(message.body)
         message.body = message.body.replace(u'\xa0', u' ')
         parts = message.body.split(' ')
@@ -161,6 +162,7 @@ def get_messages():
             body = "You have successfully been subscribed to {} in {}! I will notify you whenever they post.".format(str(parts[1]), str(parts[2]))
 
             reddit.redditor(str(message.author)).message(subject=subject, message=body) 
+            print("Subscriber notified")
         elif message.subject == "Unsubscribe" and len(parts) > 2:
             removeSubscriber(message.author, parts[1], parts[2])
 
@@ -168,12 +170,13 @@ def get_messages():
             body = "You have successfully been unsubscribed from {} in {}! You will no longer be notified when they post.".format(str(parts[1]), str(parts[2]))
 
             reddit.redditor(str(message.author)).message(subject=subject, message=body) 
+            print("Subscriber notified")
 
         message.mark_read()
         time.sleep(5)
 
 def get_posts(subreddit):
-    all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_post_flair_guide)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n**(Resources:)** [^(In Crisis?)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_crisis_resources) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JUSTNOMIL/wiki/books) ^(|) [^(Our Wiki)](https://www.reddit.com/r/{}/wiki/)\n\n".format(subreddit, subreddit, subreddit)
+    all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_post_flair_guide)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n**Resources:** [^(In Crisis?)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_crisis_resources) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JUSTNOMIL/wiki/books) ^(|) [^(Our Wiki)](https://www.reddit.com/r/{}/wiki/)\n\n".format(subreddit, subreddit, subreddit)
 
     for post in subreddit.new(limit=100):
         sticky = sticky_checker(post)
