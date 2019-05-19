@@ -128,14 +128,24 @@ def sticky_checker(post):
         #elif comment.author != BOT_NAME and comment.stickied == True:
         #    return (False, True)
 
-        if comment.author == BOT_NAME:
-            bot = True
-            if comment.stickied == True:
-                stickied = True
-            return (bot, stickied)
-        elif comment.author != BOT_NAME:
-            if comment.stickied == True:
-                stickied = True
+        if comment.stickied == True:
+            stickied = True
+            if comment.author == BOT_NAME:
+                bot = True
+                return (bot, stickied)
+        else:
+            if comment.author == BOT_NAME:
+                bot = True
+                return (bot, stickied)
+
+        #if comment.author == BOT_NAME:
+        #    bot = True
+        #    if comment.stickied == True:
+        #        stickied = True
+        #    return (bot, stickied)
+        #elif comment.author != BOT_NAME:
+        #    if comment.stickied == True:
+        #        stickied = True
 
     return (bot, stickied)
 
@@ -163,7 +173,7 @@ def get_messages():
         time.sleep(5)
 
 def get_posts(subreddit):
-    all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_post_flair_guide)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n**^(Resources:)** [^(In Crisis?)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_crisis_resources) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JUSTNOMIL/wiki/books) ^(|) [^(Our Wiki)](https://www.reddit.com/r/{}/wiki/)\n\n".format(subreddit, subreddit, subreddit)
+    all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_post_flair_guide)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n**(Resources:)** [^(In Crisis?)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_crisis_resources) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JUSTNOMIL/wiki/books) ^(|) [^(Our Wiki)](https://www.reddit.com/r/{}/wiki/)\n\n".format(subreddit, subreddit, subreddit)
 
     for post in subreddit.new(limit=100):
         sticky = sticky_checker(post)
@@ -192,11 +202,11 @@ def get_posts(subreddit):
                         break
 
                 if longer:
-                    welcome = welcome + ("This user has more than 10 posts in their history. To see the rest of their posts, click [here](/u/{}/submitted)\n\n".format(str(post.author)))
+                    welcome = welcome + ("^(This user has more than 10 posts in their history. To see the rest of their posts,) [^(click here)](/u/{}/submitted)\n\n".format(str(post.author)))
 
-            update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(| For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
+            update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(|) ^(For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
-            bot = "\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.*\n\n".format(post.subreddit)
+            bot = "\n\n*^(I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}) if you have any questions or concerns.)*\n\n".format(post.subreddit)
 
             message = all_rules + welcome + update + bot
 
@@ -237,7 +247,7 @@ def get_posts(subreddit):
             if subscribers is not None:
                 subject = "New submission by /u/{}".format(str((post.author)))
                 for subscriber in subscribers:
-                    body = "Hello /u/{},\n\n/u/{} has a new submission: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str((post.title)), str((post.permalink)), BOT_NAME, post.author, str((post.subreddit)))
+                    body = "Hello /u/{},\n\n/u/{} has a new submission in {}: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str(post.subreddit), str((post.title)), str((post.permalink)), BOT_NAME, post.author, str((post.subreddit)))
 
                     try:
                         reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
@@ -257,7 +267,7 @@ if __name__ == '__main__':
     reddit = praw.Reddit(USER_AGENT)
 
     # Don't forget to put JustNoFriend back
-    subs = ["Justnofil", "JustNoSO", "JustNoFamFiction", "JUSTNOFAMILY", "JustNoDIL", "JUSTNOMIL"]
+    subs = ["Justnofil", "JustNoSO", "JustNoFamFiction", "JustNoFriend", "JUSTNOFAMILY", "JustNoDIL", "JUSTNOMIL"]
     while True:
         get_messages()
         print("Messages gotten, getting posts")
