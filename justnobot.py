@@ -209,7 +209,7 @@ def get_posts(subreddit):
 
             update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(|) ^(For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), BOT_NAME, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
-            bot = "\n\n*^(I am a bot, and this action was performed automatically.  Please [contact the moderators of this subreddit](/message/compose/?to=/r/{}\) if you have any questions or concerns.)*\n\n".format(post.subreddit)
+            bot = "\n\n*^(I am a bot, and this action was performed automatically.) *^Please* [*^(contact the moderators of this subreddit)](/message/compose/?to=/r/{}) *^(if you have any questions or concerns.)*\n\n".format(post.subreddit)
 
             message = all_rules + welcome + update + bot
 
