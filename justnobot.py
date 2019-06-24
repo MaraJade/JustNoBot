@@ -288,7 +288,7 @@ if __name__ == '__main__':
     reddit = praw.Reddit(USER_AGENT)
 
     # Figure out how to parallelize this
-    subs = ["Justnofil", "JustNoSO", "JustNoFamFiction", "JustNoFriend", "JUSTNOFAMILY", "JustNoDIL", "JUSTNOMIL"]
+    subs = ["Justnofil", "JustNoSO", "JustNoFamFiction", "JustNoFriend", "JUSTNOFAMILY", "JustNoDIL"]
     while True:
         get_messages()
         print("Messages gotten, getting posts")
