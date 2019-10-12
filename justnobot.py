@@ -116,7 +116,6 @@ class bot():
         def is_marked(self, post):
                 self.db_connection.cursor().execute('''SELECT count (*) FROM marked_posts WHERE PostID = ?''', (str(post),))
 
-                #print(self.db_connection.cursor().fetchone())
                 return self.db_connection.cursor().fetchone()
 
 
@@ -166,15 +165,19 @@ class bot():
 
 
         # Go though all the posts on the sub
-        def get_posts(self, subreddit):
-                all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/{}/wiki/index#wiki_post_flairs)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/JUSTNOMIL/wiki/trolls)\n\n**Resources:** [^(In Crisis?)](https://www.reddit.com/r/JustNoNetwork/wiki/links#wiki_crisis_links.3A_because_there.2019s_more_than_one_type_of_crisis) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JustNoNetwork/wiki/books) ^(|) [^(This Sub's Wiki)](https://www.reddit.com/r/{}/wiki/) ^(|) [^(General Resources)](https://www.reddit.com/r/JustNoNetwork/wiki/tos)\n\n".format(subreddit, subreddit, subreddit, subreddit)
-
-                for post in self.subreddit.stream.submissions(skip_existing=True):
+        def get_posts(self):
+                
+                for post in self.reddit.subreddit('MaraTesting+MaraTesting2').stream.submissions(skip_existing=True):
                         # Check for stickies
                         sticky = self.sticky_checker(post)
 
-                        # Make sure the author has not deleted their account, the post isn't locked
+                        # Make sure the author has not deleted their account,
+                        # the post isn't locked, and we haven't already posted
+                        # on it
                         if post.author is not None and self.is_marked(post) is None and sticky[0] == False:
+                                subreddit = post.subreddit
+                                all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/{}/wiki/index#wiki_post_flairs)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/{}/wiki/index#wiki_trolls_suck)\n\n**Resources:** [^(In Crisis?)](https://www.reddit.com/r/JustNoNetwork/wiki/links#wiki_crisis_links.3A_because_there.2019s_more_than_one_type_of_crisis) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JustNoNetwork/wiki/books) ^(|) [^(This Sub's Wiki)](https://www.reddit.com/r/{}/wiki/) ^(|) [^(General Resources)](https://www.reddit.com/r/JustNoNetwork/wiki/tos)\n\n".format(subreddit, subreddit, subreddit, subreddit, subreddit)
+
                                 history = []
                                 # Get all the posts from the sub in OP's history
                                 for link in post.author.submissions.new(limit=100):
@@ -239,7 +242,7 @@ class bot():
                                         comment.mod.distinguish()
 
                                 # Lock the comment so people stop accidentaly replying to it
-                                comment.mod.lock()
+                                #comment.mod.lock()
 
                                 # Get subscribers
                                 subscribers = self.dbsearch(post.author, post.subreddit)
@@ -255,22 +258,9 @@ class bot():
                                                 print(e)
 
 
-        # initiates get_posts
-        def main(self):
-        # Figure out how to parallelize this | You wouldnt want this actually
-        #                                                                         You could easily do this using        , but you dont want to
-        #                                                                         because the seperate actions in the database will coincide
-                #subs = ["Justnofil", "JustNoSO", "JustNoFamFiction", "JustNoFriend", "JUSTNOFAMILY", "JustNoDIL"]
-                subs = ["MaraTesting", "MaraTesting2"]
-
-                for sub in subs:
-                    self.subreddit = self.reddit.subreddit(sub)
-                    self.get_posts(self.subreddit)
-
-
         # uses   to check messages and posts in parallel
         def threading(self):
-                a = threading.Thread(target=self.main, name='Thread-a', daemon=True)
+                a = threading.Thread(target=self.get_posts, name='Thread-a', daemon=True)
                 b = threading.Thread(target=self.get_messages, name='Thread-b', daemon=True)
 
                 a.start()
