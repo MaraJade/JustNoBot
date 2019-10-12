@@ -90,10 +90,7 @@ class bot():
 
                 self.db_connection.commit()
 
-                if self.db_connection.rowcount == 1:
-                        return True
-                else:
-                        return False
+                return True
 
 
         # Marking a post as locked so as to not spam subscribers
@@ -129,12 +126,12 @@ class bot():
                 if comment.stickied == True:
                     stickied = True
                     # Is it the bot?
-                    if comment.author == self.username:
+                    if comment.author == config.username:
                         bot = True
                         return (bot, stickied)
                 else:
                     # If the sticky isn't the bot, check for a comment elsewhere
-                    if comment.author == self.username:
+                    if comment.author == config.username:
                         bot = True
                         return (bot, stickied)
             return (bot, stickied)
@@ -142,7 +139,7 @@ class bot():
 
         # Get subscription/unsubscription requests
         def get_messages(self):
-                for message in self.reddit.inbox.unread(limit=100):
+                for message in self.reddit.inbox.stream():
                         message.body = message.body.replace(u'\xa0', u' ')
                         parts = message.body.split(' ')
                         if message.subject == "Subscribe" and len(parts) > 2:
@@ -206,7 +203,7 @@ class bot():
                                             welcome = welcome + ("^(This user has more than 10 posts in their history. To see the rest of their posts,) [^(click here)](/u/{}/submitted)\n\n".format(str(post.author)))
 
                                 # How to subscribe/unsubscribe
-                                update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(|) ^(For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), config.bot_name, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
+                                update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(|) ^(For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), config.username, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
                                 # Reminding people that getting angry at the comment is useless as
                                 # the bot doesn't give a shit
@@ -250,7 +247,7 @@ class bot():
                                 subject = "New submission by /u/{}".format(str((post.author)))
                                 # Send a message to each subscriber
                                 for subscriber in subscribers:
-                                        body = "Hello /u/{},\n\n/u/{} has a new submission in {}: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str(post.subreddit), str((post.title)), str((post.permalink)), BOT_NAME, post.author, str((post.subreddit)))
+                                        body = "Hello /u/{},\n\n/u/{} has a new submission in {}: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message=Unsubscribe {} {})".format(subscriber[0], post.author, str(post.subreddit), str((post.title)), str((post.permalink)), config.username, post.author, str((post.subreddit)))
 
                                         try:
                                                 self.reddit.redditor(subscriber[0]).message(subject=subject, message=body) 
