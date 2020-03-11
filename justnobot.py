@@ -173,7 +173,7 @@ class bot():
 
         # Go though all the posts on the sub
         def get_posts(self):
-                for post in self.reddit.subreddit('MaraTesting+MaraTesting2').stream.submissions(skip_existing=True):
+                for post in self.reddit.subreddit('LetterstoJNMIL+JUSTNOFAMILY+JustNoFIL+JustNoFriend+JustNoCoParent+JustNoRoommate+JustNoChurch+JustNoDIL+JustFeedback').stream.submissions(skip_existing=True):
                         # Check for stickies
                         sticky = self.sticky_checker(post)
 
