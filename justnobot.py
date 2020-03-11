@@ -16,7 +16,6 @@ class bot():
                                                                   client_secret = config.client_secret,
                                                                   user_agent = config.user_agent)
 
-                #self.subreddit = self.reddit.subreddit(str(config.sub))
                 self.db_connection = self.initiate_database()
 
 
@@ -137,6 +136,13 @@ class bot():
             return (bot, stickied)
 
 
+        def lock_comment(self, comment_id):
+            try:
+                self.reddit.comment(str(comment_id)).mod.lock()
+            except Exception as e:
+                print(e)
+                pass
+
         # Get subscription/unsubscription requests
         def get_messages(self):
                 for message in self.reddit.inbox.stream():
@@ -163,7 +169,6 @@ class bot():
 
         # Go though all the posts on the sub
         def get_posts(self):
-                
                 for post in self.reddit.subreddit('MaraTesting+MaraTesting2').stream.submissions(skip_existing=True):
                         # Check for stickies
                         sticky = self.sticky_checker(post)
@@ -239,7 +244,7 @@ class bot():
                                         comment.mod.distinguish()
 
                                 # Lock the comment so people stop accidentaly replying to it
-                                #comment.mod.lock()
+                                self.lock_comment(comment)
 
                                 # Get subscribers
                                 subscribers = self.dbsearch(post.author, post.subreddit)
