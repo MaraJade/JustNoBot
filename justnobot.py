@@ -79,13 +79,17 @@ class bot():
         # removes subscriber
         # returns boolean
         def removeSubscriber(self, subscriber, subscribedTo, subreddit):
-                self.db_connection.execute('''DELETE FROM subscriptions
-                                                                  WHERE Subscriber = ?
-                                                                  AND SubscribedTo = ?
-                                                                  AND Subreddit = ?''', 
-                                                                  (str(subscriber), 
-                                                                        str(subscribedTo), 
-                                                                        str(subreddit)))
+                try:
+                        self.db_connection.execute('''DELETE FROM subscriptions
+                                                                          WHERE Subscriber = ?
+                                                                          AND SubscribedTo = ?
+                                                                          AND Subreddit = ?''', 
+                                                                          (str(subscriber), 
+                                                                                str(subscribedTo), 
+                                                                                str(subreddit)))
+                except sqlite3.IntegrityError:
+                        print("Failed to delete subscription")
+                        return False
 
                 self.db_connection.commit()
 
@@ -208,7 +212,7 @@ class bot():
                                             welcome = welcome + ("^(This user has more than 10 posts in their history. To see the rest of their posts,) [^(click here)](/u/{}/submitted)\n\n".format(str(post.author)))
 
                                 # How to subscribe/unsubscribe
-                                update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {}) ^(|) ^(For help managing your subscriptions,) [^(click here.)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_.2Fu.2Fthejustnobot)\n*****\n\n\n".format(str(post.author), config.username, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
+                                update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message=Subscribe {} {})\n*****\n\n\n".format(str(post.author), config.username, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
 
                                 # Reminding people that getting angry at the comment is useless as
                                 # the bot doesn't give a shit
