@@ -5,6 +5,7 @@ import string
 import sqlite3
 import threading
 import config
+import pprint
 
 
 class bot():
@@ -173,7 +174,12 @@ class bot():
 
         # Go though all the posts on the sub
         def get_posts(self):
-                for post in self.reddit.subreddit('LetterstoJNMIL+JUSTNOFAMILY+JustNoFIL+JustNoFriend+JustNoCoParent+JustNoRoommate+JustNoChurch+JustNoDIL+JustFeedback').stream.submissions(skip_existing=True):
+                for post in self.reddit.subreddit('LetterstoJNMIL+JUSTNOFAMILY+JustNoFIL+JustNoFriend+JustNoCoParent+JustNoRoommate+JustNoChurch+JustNoDIL+JustFeedback').stream.submissions():
+
+                        # Don't try to comment on archived posts
+                        if post.archived:
+                            continue
+
                         # Check for stickies
                         sticky = self.sticky_checker(post)
 
@@ -224,6 +230,7 @@ class bot():
                                 # Try catch due to a lot of errors
                                 try:
                                         comment = post.reply(message)
+                                        print("Commented")
                                 except praw.exceptions.APIException as e:
                                         print(e)
 
@@ -238,17 +245,23 @@ class bot():
                                 # Double check that there isn't already a sticky
                                 if sticky[0] == False and sticky[1] == False:
                                         try:
-                                           comment.mod.distinguish(sticky=True)
+                                               comment.mod.distinguish(sticky=True)
                                         except Exception as e:
-                                           print(e)
+                                               print(e)
 
                                 # If there is a sticky that isn't the bot, don't sticky the new
                                 # comment
                                 elif sticky[0] == False and sticky[1] == True:
-                                        comment.mod.distinguish()
+                                        try:
+                                                comment.mod.distinguish()
+                                        except Exception as e:
+                                                print(e)
 
                                 # Lock the comment so people stop accidentaly replying to it
-                                self.lock_comment(comment)
+                                try:
+                                        self.lock_comment(comment)
+                                except Exception as e:
+                                        print(e)
 
                                 # Get subscribers
                                 subscribers = self.dbsearch(post.author, post.subreddit)
