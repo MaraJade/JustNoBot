@@ -159,14 +159,26 @@ class bot():
                                 subject = "Successfully subscribed to {}".format(parts[1])
                                 body = "You have successfully been subscribed to {} in {}! I will notify you whenever they post.".format(str(parts[1]), str(parts[2]))
 
-                                self.reddit.redditor(str(message.author)).message(subject=subject, message=body) 
+                                try:
+                                        self.reddit.redditor(str(message.author)).message(subject=subject, message=body) 
+                                except Exception as e:
+                                        print(e)
+                                        pass
+
+                                print("Subscriber notified")
+
                         elif message.subject == "Unsubscribe" and len(parts) > 2:
                                 self.removeSubscriber(message.author, parts[1], parts[2])
 
                                 subject = "Successfully unsubscribed from {}".format(parts[1])
                                 body = "You have successfully been unsubscribed from {} in {}! You will no longer be notified when they post.".format(str(parts[1]), str(parts[2]))
 
-                                self.reddit.redditor(str(message.author)).message(subject=subject, message=body) 
+                                try:
+                                        self.reddit.redditor(str(message.author)).message(subject=subject, message=body) 
+                                except Exception as e:
+                                        print(e)
+                                        pass
+
                                 print("Subscriber notified")
 
                         message.mark_read()
