@@ -46,7 +46,7 @@ If you want to run the bot yourself, follow these steps:
 * Give it a name, select script, enter a redirect url (http://127.0.0.1 works),
   hit create app
 
-* Copy praw.ini.sample to praw.ini, and enter your login information, as well as
+* Copy config.py.sample to config.py, and enter your login information, as well as
   the secrets you now have from creating the app.
 
 * Run the bot! `python3 justnobot.py`
@@ -65,3 +65,9 @@ https://help.github.com/en/articles/creating-a-pull-request!
 I am not responsible for you getting banned because you ran the bot on a sub
 without permission. Make sure to change the sub(s) the bot is running on before
 starting it.
+
+## TODO:
+
+* Add network-wide subscription option
+
+* Add option to view subscriptions
