@@ -42,19 +42,19 @@ conn.commit()
 print("Connected to SQLITE database " + sqlite3.version)
 
 
-conn.execute('''INSERT INTO posters(poster_name)
+conn.execute('''INSERT OR IGNORE INTO posters(poster_name)
                     SELECT DISTINCT SubscribedTo
                     FROM subscriptions''')
 
 conn.commit()
 
-conn.execute('''INSERT INTO subscribers(subscriber_name)
+conn.execute('''INSERT OR IGNORE INTO subscribers(subscriber_name)
                     SELECT DISTINCT Subscriber
                     FROM subscriptions''')
 
 conn.commit()
 
-conn.execute('''INSERT INTO subscription (poster_id, subscriber_id, subreddit_id)
+conn.execute('''INSERT OR IGNORE INTO subscription (poster_id, subscriber_id, subreddit_id)
                     SELECT p.poster_id, s.subscriber_id, u.subreddit_id
                     FROM subscriptions d
                     INNER JOIN posters p on d.SubscribedTo = p.poster_name
