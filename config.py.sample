@@ -7,7 +7,7 @@ username = ''
 # User password
 password = '' 
 # User agent
-user_agent = 'JustNoBot/0.1 by MaraJade' 
+user_agent = 'JustNoBot/0.2 by MaraJade' 
 
 # Bot name
 bot_name = "TheJustNoBot" 
