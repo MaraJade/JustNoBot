@@ -170,15 +170,23 @@ class bot():
 
         # Get subscription/unsubscription requests
         def get_messages(self):
+                print("Getting messages")
                 while True:
+                        print("Restarting messages")
                         try:
                                 for message in self.reddit.inbox.stream():
                                         message.body = message.body.replace(u'\xa0', u' ')
                                         parts = message.body.split(' ')
-
-                                        subscriber = str(message.author)
-                                        poster = str(parts[0])
-                                        subreddit = str(parts[1])
+                                        if len(parts) != 2:
+                                                try:
+                                                        message.mark_read()
+                                                except Exception as e:
+                                                        print(e)
+                                                continue
+                                        else:
+                                            subscriber = str(message.author)
+                                            poster = str(parts[0])
+                                            subreddit = str(parts[1])
 
                                         if message.subject == "Subscribe" and len(parts) > 1:
                                                 print("Adding subscriber")
@@ -218,7 +226,6 @@ class bot():
 
                         except Exception as e:
                                 print(e)
-                                sleep(20)
                                 continue
 
         # Make sure the user exists
@@ -234,12 +241,14 @@ class bot():
 
         # Go though all the posts on the sub
         def get_posts(self):
+                print("Getting posts")
                 network = self.subreddits[0]
 
                 for i in range(1, len(self.subreddits)):
                     network = network + '+' + self.subreddits[i] 
 
                 while True: 
+                        print("Restarting posts")
                         try:
                                 for post in self.reddit.subreddit(network).stream.submissions():
 
@@ -343,7 +352,6 @@ class bot():
 
                         except Exception as e:
                                 print(e)
-                                sleep(20)
                                 continue
 
 
