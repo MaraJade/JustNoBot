@@ -109,4 +109,11 @@ config.py
 
 # Databases
 .db
+*.db
 sqlite3
+
+# Swap files
+*.swp
+
+# Backup files
+*.bak
