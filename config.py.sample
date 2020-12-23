@@ -1,0 +1,18 @@
+# User ID
+client_id = '' 
+# User secret ID
+client_secret = '' 
+# User Username
+username = '' 
+# User password
+password = '' 
+# User agent
+user_agent = 'JustNoBot/0.1 by MaraJade' 
+
+# Bot Name
+bot_name = "" # bot name
+# Database Name
+db_name = "" # database name
+
+# Comma separated subreddit strings
+subreddits = ['', '']
