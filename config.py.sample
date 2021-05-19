@@ -1,18 +1,18 @@
 # User ID
-client_id = '' 
+client_id = ''
 # User secret ID
-client_secret = '' 
+client_secret = ''
 # User Username
-username = '' 
+username = ''
 # User password
-password = '' 
+password = ''
 # User agent
-user_agent = 'JustNoBot/0.1 by MaraJade' 
+user_agent = 'JustNoBot/0.1 by MaraJade'
 
 # Bot Name
-bot_name = "" # bot name
+bot_name = ""
 # Database Name
-db_name = "" # database name
+db_name = ""
 
 # Comma separated subreddit strings
 subreddits = ['', '']

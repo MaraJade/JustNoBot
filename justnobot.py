@@ -6,6 +6,7 @@ import sqlite3
 import threading
 import config
 import pprint
+import sys
 
 
 class bot():
@@ -61,20 +62,20 @@ class bot():
 
                         for sub in self.subreddits:
                             conn.execute('''INSERT OR IGNORE INTO subreddits(subreddit_name) VALUES(?)''', (str(sub),))
-                                        
+
 
                         conn.commit()
-                        print("Connected to SQLITE database " + sqlite3.version)
+                        print(f"Connected to SQLITE database {sqlite3.version}")
                         return conn
 
                 except sqlite3.OperationalError as e:
-                        print("Failed to connect to database")
-                        print(e)
+                        print(f"Failed to connect to database: {e}", file=sys.stderr)
 
 
-        # takes poster and subreddit, 
+        # takes poster and subreddit,
         # searches database returns hits
         def dbsearch(self, poster, subreddit):
+                print("Getting subscribers", file=sys.stderr)
                 # Only does specific sub
                 # TODO: query for all subs
                 subscriber_ids = self.db_connection.execute('''SELECT subscriber_id FROM subscription WHERE poster_id =
@@ -109,11 +110,11 @@ class bot():
                                                                             (poster, subscriber, subreddit))
 
                 except sqlite3.IntegrityError:
-                        print("Failed to add subscription")
+                        print("Failed to add subscription", file=sys.stderr)
                         return False
 
                 self.db_connection.commit()
-                
+
                 return True
 
 
@@ -122,7 +123,7 @@ class bot():
         # returns boolean
         def removeSubscription(self, subscriber, poster, subreddit):
                 try:
-                        self.db_connection.execute('''DELETE FROM subscription WHERE ID = 
+                        self.db_connection.execute('''DELETE FROM subscription WHERE ID =
                                                                     (SELECT ID FROM subscription WHERE poster_id =
                                                                     (SELECT poster_id FROM posters WHERE poster_name = ?) AND subscriber_id =
                                                                     (SELECT subscriber_id FROM subscribers WHERE subscriber_name = ?) AND subreddit_id =
@@ -130,7 +131,7 @@ class bot():
                                                                         (poster, subscriber, subreddit))
 
                 except sqlite3.IntegrityError:
-                        print("Failed to delete subscription")
+                        print("Failed to delete subscription", file=sys.stderr)
                         return False
 
                 self.db_connection.commit()
@@ -140,12 +141,10 @@ class bot():
 
         # Checking if the post has already been responded to
         def sticky_checker(self, post):
-            #print("Checking for sticky")
+            #print("Checking for sticky", file=sys.stderr)
             bot = False
             stickied = False
             for comment in list(post.comments):
-                # Switch statement? (Python doesn't have switch statements, it
-                # turns out)
                 # Check for a sticky
                 if comment.stickied == True:
                     stickied = True
@@ -165,14 +164,13 @@ class bot():
             try:
                 self.reddit.comment(str(comment_id)).mod.lock()
             except Exception as e:
-                print(e)
+                print(e, file=sys.stderr)
                 pass
 
         # Get subscription/unsubscription requests
         def get_messages(self):
-                print("Getting messages")
+                print("Getting messages", file=sys.stderr)
                 while True:
-                        print("Restarting messages")
                         try:
                                 for message in self.reddit.inbox.stream():
                                         message.body = message.body.replace(u'\xa0', u' ')
@@ -181,7 +179,7 @@ class bot():
                                                 try:
                                                         message.mark_read()
                                                 except Exception as e:
-                                                        print(e)
+                                                        print(e, file=sys.stderr)
                                                 continue
                                         else:
                                             subscriber = str(message.author)
@@ -190,44 +188,43 @@ class bot():
 
                                         # Should really regex this
                                         if message.subject == "Subscribe" and len(parts) > 1:
-                                                print("Adding subscriber")
+                                                print("Adding subscriber", file=sys.stderr)
                                                 self.addSubscriber(subscriber, poster, subreddit)
 
-                                                subject = "Successfully subscribed to {}".format(poster)
-                                                body = "You have successfully been subscribed to {} in {}! I will notify you whenever they post.".format(poster, subreddit)
-
+                                                subject = f"Successfully subscribed to {poster}"
+                                                body = f"You have successfully been subscribed to {poster} in {subreddit}! I will notify you whenever they post."
                                                 try:
-                                                        self.reddit.redditor(subscriber).message(subject=subject, message=body) 
-                                                        print("Subscriber notified")
+                                                        self.reddit.redditor(subscriber).message(subject=subject, message=body)
+                                                        print("Subscriber notified", file=sys.stderr)
                                                 except Exception as e:
-                                                        print(e)
+                                                        print(e, file=sys.stderr)
                                                         pass
 
 
                                         # Should really regex this
                                         elif message.subject == "Unsubscribe" and len(parts) > 1:
-                                                print("Removing subscriber")
+                                                print("Removing subscriber", file=sys.stderr)
                                                 self.removeSubscription(subscriber, poster, subreddit)
 
-                                                subject = "Successfully unsubscribed from {}".format(poster)
-                                                body = "You have successfully been unsubscribed from {} in {}! You will no longer be notified when they post.".format(poster, subreddit)
+                                                subject = f"Successfully unsubscribed from {poster}"
+                                                body = f"You have successfully been unsubscribed from {poster} in {subreddit}! You will no longer be notified when they post."
 
                                                 try:
-                                                        self.reddit.redditor(subscriber).message(subject=subject, message=body) 
-                                                        print("Subscriber notified")
+                                                        self.reddit.redditor(subscriber).message(subject=subject, message=body)
+                                                        print("Subscriber notified", file=sys.stderr)
                                                 except Exception as e:
-                                                        print(e)
+                                                        print(e, file=sys.stderr)
                                                         pass
 
 
                                         try:
                                                 message.mark_read()
                                         except Exception as e:
-                                                print(e)
+                                                print(e, file=sys.stderr)
                                                 pass
 
                         except Exception as e:
-                                print(e)
+                                print(f"Restarting messages: {e}", file=sys.stderr)
                                 continue
 
         # Make sure the user exists
@@ -235,20 +232,19 @@ class bot():
                 try:
                         user = self.reddit.redditor(str(name)).id
                 except Exception as e:
-                        print(e)
+                        print(e, file=sys.stderr)
                         return False
                 return True
 
         # Go though all the posts on the sub
         def get_posts(self):
-                print("Getting posts")
+                print("Getting posts", file=sys.stderr)
                 network = self.subreddits[0]
 
                 for i in range(1, len(self.subreddits)):
-                    network = network + '+' + self.subreddits[i] 
+                    network = network + '+' + self.subreddits[i]
 
-                while True: 
-                        print("Restarting posts")
+                while True:
                         try:
                                 for post in self.reddit.subreddit(network).stream.submissions():
 
@@ -264,7 +260,7 @@ class bot():
                                         # on it
                                         if (self.user_exists(post.author) == True) and (sticky[0] == False):
                                                 subreddit = post.subreddit
-                                                all_rules = "**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/{}/wiki/index#wiki_post_flairs)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/{}/wiki/index#wiki_trolls_suck)\n\n**Resources:** [^(In Crisis?)](https://www.reddit.com/r/JustNoNetwork/wiki/links#wiki_crisis_links.3A_because_there.2019s_more_than_one_type_of_crisis) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JustNoNetwork/wiki/books) ^(|) [^(This Sub's Wiki)](https://www.reddit.com/r/{}/wiki/) ^(|) [^(General Resources)](https://www.reddit.com/r/JustNoNetwork/wiki/tos)\n\n".format(subreddit, subreddit, subreddit, subreddit, subreddit)
+                                                all_rules = f"**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_post_flairs)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_trolls_suck)\n\n**Resources:** [^(In Crisis?)](https://www.reddit.com/r/JustNoNetwork/wiki/links#wiki_crisis_links.3A_because_there.2019s_more_than_one_type_of_crisis) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JustNoNetwork/wiki/books) ^(|) [^(This Sub's Wiki)](https://www.reddit.com/r/{subreddit}/wiki/) ^(|) [^(General Resources)](https://www.reddit.com/r/JustNoNetwork/wiki/tos)\n\n"
 
                                                 history = []
                                                 # Get all the posts from the sub in OP's history
@@ -275,53 +271,53 @@ class bot():
                                                 message = ''
                                                 # First time poster
                                                 if len(history) <= 1:
-                                                        welcome = "Welcome to /r/{}!\n\nI'm JustNoBot. I help people follow your posts!\n\n".format(post.subreddit)
+                                                        welcome = f"Welcome to /r/{subreddit}!\n\nI'm JustNoBot. I help people follow your posts!\n\n"
                                                 # Previous poster
                                                 else:
-                                                        welcome = "Other posts from /u/{}:\n\n\n".format(str((post.author)))
+                                                        welcome = f"Other posts from /u/{post.author}:\n\n\n"
 
                                                         count = 0
                                                         longer = False
                                                         # Construct the history part of the comment
                                                         for entry in history[1:]:
-                                                                welcome = welcome + ("* [{}]({})\n\n".format(str((entry.title)), str((entry.permalink))))
+                                                                post_time = time.strftime('%x %X', time.localtime(entry.created_utc))
+                                                                welcome = welcome + (f"* [{post_time}: {entry.title}]({entry.permalink})\n\n")
                                                                 count += 1
                                                                 if count == 10:
                                                                     longer = True
                                                                     break
                                                         if longer:
-                                                            # Add the statement if the history is too long
-                                                            welcome = welcome + ("^(This user has more than 10 posts in their history. To see the rest of their posts,) [^(click here)](/u/{}/submitted)\n\n".format(str(post.author)))
+                                                                # Add the statement if the history is too long
+                                                                welcome = welcome + f"^(This user has more than 10 posts in their history. To see the rest of their posts,) [^(click here)](/u/{post.author}/submitted)\n\n"
 
-                                                # How to subscribe/unsubscribe
-                                                update = ("\n\n*****\n\n\n\n^(To be notified as soon as {} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={}&subject=Subscribe&message={} {})\n*****\n\n\n".format(str(post.author), config.username, str(post.author), str(post.subreddit), str(post.author), str(post.subreddit)))
+                                                # How to subscribe
+                                                update = f"\n\n*****\n\n\n\n^(To be notified as soon as {post.author} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={config.username}&subject=Subscribe&message={post.author} {subreddit})\n*****\n\n\n"
 
                                                 # Reminding people that getting angry at the comment is useless as
                                                 # the bot doesn't give a shit
-                                                bot = "\n\n*^(I am a bot, and this action was performed automatically. Please)* [*^(contact the moderators of this subreddit)*](/message/compose/?to=/r/{}) *^(if you have any questions or concerns.)*\n\n".format(post.subreddit)
+                                                bot = f"\n\n*^(I am a bot, and this action was performed automatically. Please)* [*^(contact the moderators of this subreddit)*](/message/compose/?to=/r/{subreddit}) *^(if you have any questions or concerns.)*\n\n"
 
                                                 # Construct the comment
-                                                message = all_rules + welcome + update + bot
-
+                                                message = f"{all_rules}{welcome}{update}{bot}"
                                                 # Try catch due to a lot of errors
                                                 try:
                                                         comment = post.reply(message)
-                                                        print("Commented")
+                                                        print("Commented", file=sys.stderr)
                                                 except praw.exceptions.APIException as e:
-                                                        print(e)
+                                                        print(e, file=sys.stderr)
 
                                                         if e == "RATELIMIT: 'you are doing that too much. try again in 5 seconds.' on field 'ratelimit'":
                                                                 try:
                                                                         comment = post.reply(message)
                                                                 except praw.exceptions.APIException as e:
-                                                                        print(e)
+                                                                        print(e, file=sys.stderr)
 
                                                 # Double check that there isn't already a sticky
                                                 if sticky[0] == False and sticky[1] == False:
                                                         try:
                                                                comment.mod.distinguish(sticky=True)
                                                         except Exception as e:
-                                                               print(e)
+                                                               print(e, file=sys.stderr)
 
                                                 # If there is a sticky that isn't the bot, don't sticky the new
                                                 # comment
@@ -329,29 +325,30 @@ class bot():
                                                         try:
                                                                 comment.mod.distinguish()
                                                         except Exception as e:
-                                                                print(e)
+                                                                print(e, file=sys.stderr)
 
                                                 # Lock the comment so people stop accidentally replying to it
                                                 try:
                                                         self.lock_comment(comment)
                                                 except Exception as e:
-                                                        print(e)
+                                                        print(e, file=sys.stderr)
 
                                                 # Get subscribers
-                                                subscribers = self.dbsearch(str(post.author), str(post.subreddit))
+                                                subscribers = self.dbsearch(str(post.author), str(subreddit))
 
-                                                subject = "New submission by /u/{}".format(str((post.author)))
+                                                subject = f"New submission by /u/{post.author}"
                                                 # Send a message to each subscriber
                                                 for subscriber in subscribers:
-                                                        body = "Hello /u/{},\n\n/u/{} has a new submission in {}: [{}]({})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={}&subject=Unsubscribe&message={} {})".format(subscriber, post.author, str(post.subreddit), str((post.title)), str((post.permalink)), config.username, post.author, str((post.subreddit)))
+                                                        body = f"Hello /u/{subscriber},\n\n/u/{post.author} has a new submission in {subreddit}: [{post.title}]({post.permalink})\n\n \n\n*****\n\n\n\n^(To unsubscribe) [^click ^here](http://www.reddit.com/message/compose/?to={config.username}&subject=Unsubscribe&message={post.author} {subreddit})"
 
                                                         try:
-                                                                self.reddit.redditor(subscriber).message(subject=subject, message=body) 
+                                                                self.reddit.redditor(subscriber).message(subject=subject, message=body)
+                                                                print("Subscription message sent", file=sys.stderr)
                                                         except Exception as e:
-                                                                print(e)
+                                                                print(e, file=sys.stderr)
 
                         except Exception as e:
-                                print(e)
+                                print(f"Restarting posts: {e}", file=sys.stderr)
                                 continue
 
 
@@ -368,4 +365,5 @@ class bot():
 
 
 if __name__ == '__main__':
+        print("Booting up", file=sys.stderr)
         bot().threading()
