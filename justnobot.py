@@ -65,7 +65,7 @@ class bot():
 
 
                         conn.commit()
-                        print(f"Connected to SQLITE database {sqlite3.version}")
+                        print(f"Connected to SQLITE database {sqlite3.version}", file=sys.stderr)
                         return conn
 
                 except sqlite3.OperationalError as e:
@@ -75,7 +75,7 @@ class bot():
         # takes poster and subreddit,
         # searches database returns hits
         def dbsearch(self, poster, subreddit):
-                print("Getting subscribers", file=sys.stderr)
+                #print("Getting subscribers", file=sys.stderr)
                 # Only does specific sub
                 # TODO: query for all subs
                 subscriber_ids = self.db_connection.execute('''SELECT subscriber_id FROM subscription WHERE poster_id =
@@ -343,7 +343,7 @@ class bot():
 
                                                         try:
                                                                 self.reddit.redditor(subscriber).message(subject=subject, message=body)
-                                                                print("Subscription message sent", file=sys.stderr)
+                                                                #print("Subscription message sent", file=sys.stderr)
                                                         except Exception as e:
                                                                 print(e, file=sys.stderr)
 
