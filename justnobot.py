@@ -1,35 +1,42 @@
 #!/usr/bin/python
+import config
+
 import praw
 import time
 import string
 import sqlite3
 import threading
-import config
 import pprint
 import sys
 
 
 class bot():
         # define variables
-        def __init__(self):
+        def __init__(self, isTest):
                 self.reddit = praw.Reddit(username = config.username,
                                                                   password = config.password,
                                                                   client_id = config.client_id,
                                                                   client_secret = config.client_secret,
                                                                   user_agent = config.user_agent)
 
-                self.subreddits = config.subreddits
+                if isTest:
+                        self.subreddits = config.test_subs
+                else:
+                        self.subreddits = config.subreddits
 
-                self.db_connection = self.initiate_database()
+                if isTest:
+                        self.db_connection = self.initiate_database(config.test_db)
+                else:
+                        self.db_connection = self.initiate_database(config.db_name)
 
 
         # initiates database
-        def initiate_database(self):
+        def initiate_database(self, database):
                 """ create a database connection to a database that resides
-                in justno.db file
+                in a .db file
                 """
                 try:
-                        conn = sqlite3.connect(config.db_name, check_same_thread=False)
+                        conn = sqlite3.connect(database, check_same_thread=False)
 
                         conn.execute('''CREATE TABLE IF NOT EXISTS posters(
                                         poster_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,7 +81,7 @@ class bot():
 
         # takes poster and subreddit,
         # searches database returns hits
-        def dbsearch(self, poster, subreddit):
+        def getSubscribers(self, poster, subreddit):
                 #print("Getting subscribers", file=sys.stderr)
                 # Only does specific sub
                 # TODO: query for all subs
@@ -82,9 +89,12 @@ class bot():
                                                                     (SELECT poster_id FROM posters WHERE poster_name = ?) AND subreddit_id =
                                                                     (SELECT subreddit_id FROM subreddits WHERE subreddit_name = ?)''',
                                                                     (poster, subreddit))
+                #print(subscriber_ids, file=sys.stderr)
                 subscribers = []
                 for subscriber in subscriber_ids:
                     subscribers.append(self.db_connection.execute('''SELECT subscriber_name FROM subscribers WHERE subscriber_id = ?''', (subscriber)).fetchall()[0][0])
+
+                #print(subscribers, file=sys.stderr)
 
                 return subscribers
 
@@ -334,7 +344,7 @@ class bot():
                                                         print(e, file=sys.stderr)
 
                                                 # Get subscribers
-                                                subscribers = self.dbsearch(str(post.author), str(subreddit))
+                                                subscribers = self.getSubscribers(str(post.author), str(subreddit))
 
                                                 subject = f"New submission by /u/{post.author}"
                                                 # Send a message to each subscriber
@@ -366,4 +376,4 @@ class bot():
 
 if __name__ == '__main__':
         print("Booting up", file=sys.stderr)
-        bot().threading()
+        bot(False).threading()
