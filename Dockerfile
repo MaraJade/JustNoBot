@@ -36,11 +36,11 @@ ADD justno.db /app
 
 WORKDIR /app
 
-#RUN apt update && apt upgrade -y
-#RUN apt install sqlite3 -y
+RUN apt update && apt upgrade -y
+RUN apt install sqlite3 -y
 
-#RUN pip install --no-cache-dir --upgrade pip && \
-#    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 CMD ["python3", "justnobot.py"]
 
