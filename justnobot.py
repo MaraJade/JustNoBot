@@ -8,6 +8,7 @@ import sqlite3
 import threading
 import pprint
 import sys
+import psycopg2
 
 
 class bot():
@@ -25,42 +26,53 @@ class bot():
                         self.subreddits = config.subreddits
 
                 if isTest:
-                        self.db_connection = self.initiate_database(config.test_db)
+                        self.dbConn = self.initDB(config.test_db)
                 else:
-                        self.db_connection = self.initiate_database(config.db_name)
+                        self.dbConn = self.initDB(config.db_name)
+
+                #if isTest:
+                #        self.db_connection = self.initiate_database(config.test_db)
+                #else:
+                #        self.db_connection = self.initiate_database(config.db_name)
+
+                if self.dbConn:
+                        self.dbCur = self.dbConn.cursor()
+                else:
+                        sys.exit("Database failure")
 
 
-        # initiates database
-        def initiate_database(self, database):
-                """ create a database connection to a database that resides
-                in a .db file
-                """
+        # Initiate PostgreSQL Database
+        def initDB(self, database):
                 try:
-                        conn = sqlite3.connect(database, check_same_thread=False)
+                        conn = psycopg2.connect(database=database,
+                                                    user=config.db_user,
+                                                    password=config.db_password,
+                                                    host='postgresql')
+                        cur = conn.cursor()
 
-                        conn.execute('''CREATE TABLE IF NOT EXISTS posters(
-                                        poster_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        cur.execute('''CREATE TABLE IF NOT EXISTS posters(
+                                        poster_id SERIAL PRIMARY KEY,
                                         poster_name VARCHAR(80) UNIQUE NOT NULL
                                         )'''
                                     )
 
-                        conn.execute('''CREATE TABLE IF NOT EXISTS subscribers(
-                                        subscriber_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        cur.execute('''CREATE TABLE IF NOT EXISTS subscribers(
+                                        subscriber_id SERIAL PRIMARY KEY,
                                         subscriber_name VARCHAR(80) UNIQUE NOT NULL
                                         )'''
                                     )
 
-                        conn.execute('''CREATE TABLE IF NOT EXISTS subreddits(
-                                        subreddit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        cur.execute('''CREATE TABLE IF NOT EXISTS subreddits(
+                                        subreddit_id SERIAL PRIMARY KEY,
                                         subreddit_name VARCHAR(80) UNIQUE NOT NULL
                                         )'''
                                     )
 
-                        conn.execute('''CREATE TABLE IF NOT EXISTS subscription(
-                                        ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                                        poster_id INTEGER NOT NULL,
-                                        subscriber_id INTEGER NOT NULL,
-                                        subreddit_id INTEGER NOT NULL,
+                        cur.execute('''CREATE TABLE IF NOT EXISTS subscription(
+                                        ID SERIAL PRIMARY KEY,
+                                        poster_id INT NOT NULL,
+                                        subscriber_id INT NOT NULL,
+                                        subreddit_id INT NOT NULL,
                                         FOREIGN KEY (poster_id) references posters(poster_id) ON DELETE CASCADE,
                                         FOREIGN KEY (subscriber_id) references subscribers(subscriber_id) ON DELETE CASCADE,
                                         FOREIGN KEY (subreddit_id) references subreddits(subreddit_id) ON DELETE CASCADE
@@ -68,15 +80,65 @@ class bot():
                                     )
 
                         for sub in self.subreddits:
-                            conn.execute('''INSERT OR IGNORE INTO subreddits(subreddit_name) VALUES(?)''', (str(sub),))
-
+                            cur.execute('''INSERT INTO subreddits(subreddit_name) VALUES(%s) ON CONFLICT DO NOTHING''', (str(sub),))
 
                         conn.commit()
-                        print(f"Connected to SQLITE database {sqlite3.version}", file=sys.stderr)
+                        print(f"Connected to PostgreSQL database", file=sys.stderr)
                         return conn
 
-                except sqlite3.OperationalError as e:
+                except Exception as e:
                         print(f"Failed to connect to database: {e}", file=sys.stderr)
+                        return False
+
+
+
+        # initiates database
+        #def initiate_database(self, database):
+        #        """ create a database connection to a database that resides
+        #        in a .db file
+        #        """
+        #        try:
+        #                conn = sqlite3.connect(database, check_same_thread=False)
+
+        #                conn.execute('''CREATE TABLE IF NOT EXISTS posters(
+        #                                poster_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #                                poster_name VARCHAR(80) UNIQUE NOT NULL
+        #                                )'''
+        #                            )
+
+        #                conn.execute('''CREATE TABLE IF NOT EXISTS subscribers(
+        #                                subscriber_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #                                subscriber_name VARCHAR(80) UNIQUE NOT NULL
+        #                                )'''
+        #                            )
+
+        #                conn.execute('''CREATE TABLE IF NOT EXISTS subreddits(
+        #                                subreddit_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #                                subreddit_name VARCHAR(80) UNIQUE NOT NULL
+        #                                )'''
+        #                            )
+
+        #                conn.execute('''CREATE TABLE IF NOT EXISTS subscription(
+        #                                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        #                                poster_id INTEGER NOT NULL,
+        #                                subscriber_id INTEGER NOT NULL,
+        #                                subreddit_id INTEGER NOT NULL,
+        #                                FOREIGN KEY (poster_id) references posters(poster_id) ON DELETE CASCADE,
+        #                                FOREIGN KEY (subscriber_id) references subscribers(subscriber_id) ON DELETE CASCADE,
+        #                                FOREIGN KEY (subreddit_id) references subreddits(subreddit_id) ON DELETE CASCADE
+        #                                )'''
+        #                            )
+
+        #                for sub in self.subreddits:
+        #                    conn.execute('''INSERT OR IGNORE INTO subreddits(subreddit_name) VALUES()''', (str(sub),))
+
+
+        #                conn.commit()
+        #                print(f"Connected to SQLITE database {sqlite3.version}", file=sys.stderr)
+        #                return conn
+
+        #        except sqlite3.OperationalError as e:
+        #                print(f"Failed to connect to database: {e}", file=sys.stderr)
 
 
         # takes poster and subreddit,
@@ -85,16 +147,21 @@ class bot():
                 #print("Getting subscribers", file=sys.stderr)
                 # Only does specific sub
                 # TODO: query for all subs
-                subscriber_ids = self.db_connection.execute('''SELECT subscriber_id FROM subscription WHERE poster_id =
-                                                                    (SELECT poster_id FROM posters WHERE poster_name = ?) AND subreddit_id =
-                                                                    (SELECT subreddit_id FROM subreddits WHERE subreddit_name = ?)''',
+                self.dbCur.execute('''SELECT subscriber_id FROM subscription WHERE poster_id =
+                                                                    (SELECT poster_id FROM posters WHERE poster_name = %s)
+                                                                    AND subreddit_id =
+                                                                    (SELECT subreddit_id FROM subreddits WHERE subreddit_name = %s)''',
                                                                     (poster, subreddit))
-                #print(subscriber_ids, file=sys.stderr)
+                sub_ids = []
                 subscribers = []
-                for subscriber in subscriber_ids:
-                    subscribers.append(self.db_connection.execute('''SELECT subscriber_name FROM subscribers WHERE subscriber_id = ?''', (subscriber)).fetchall()[0][0])
-
-                #print(subscribers, file=sys.stderr)
+                for sub in self.dbCur:
+                    #print(f"Cursor: {sub}", file=sys.stderr)
+                    sub_ids.append(sub)
+                for sub in sub_ids:
+                    self.dbCur.execute('''SELECT subscriber_name FROM subscribers WHERE subscriber_id = %s''', (sub,))
+                    for result in self.dbCur:
+                        #print(f"Cursor: {result}", file=sys.stderr)
+                        subscribers.append(result[0])
 
                 return subscribers
 
@@ -107,23 +174,21 @@ class bot():
         # TODO: Prevent duplicates
         def addSubscriber(self, subscriber, poster, subreddit):
                 try:
-                        self.db_connection.execute('''INSERT OR IGNORE INTO posters(poster_name)
-                                                            VALUES(?)''', (poster,))
-                        self.db_connection.execute('''INSERT OR IGNORE INTO subscribers(subscriber_name)
-                                                            VALUES(?)''', (subscriber,))
-                        self.db_connection.execute('''INSERT OR IGNORE INTO subscription
-                                                            (poster_id, subscriber_id, subreddit_id)
+                        self.dbCur.execute('''INSERT INTO posters(poster_name) VALUES(%s) ON CONFLICT DO NOTHING''', (poster,))
+                        self.dbCur.execute('''INSERT INTO subscribers(subscriber_name) VALUES(%s) ON CONFLICT DO NOTHING''', (subscriber,))
+                        self.dbCur.execute('''INSERT INTO subscription (poster_id, subscriber_id, subreddit_id)
                                                             VALUES(
-                                                                    (SELECT poster_id FROM posters WHERE poster_name = ?),
-                                                                    (SELECT subscriber_id FROM subscribers WHERE subscriber_name = ?),
-                                                                    (SELECT subreddit_id FROM subreddits WHERE subreddit_name = ?)) ''',
+                                                                    (SELECT poster_id FROM posters WHERE poster_name = %s),
+                                                                    (SELECT subscriber_id FROM subscribers WHERE subscriber_name = %s),
+                                                                    (SELECT subreddit_id FROM subreddits WHERE subreddit_name = %s))
+                                                            ON CONFLICT DO NOTHING''',
                                                                             (poster, subscriber, subreddit))
 
-                except sqlite3.IntegrityError:
-                        print("Failed to add subscription", file=sys.stderr)
+                except Exception as e:
+                        print(f"Failed to add subscription: {e}", file=sys.stderr)
                         return False
 
-                self.db_connection.commit()
+                self.dbConn.commit()
 
                 return True
 
@@ -133,24 +198,24 @@ class bot():
         # returns boolean
         def removeSubscription(self, subscriber, poster, subreddit):
                 try:
-                        self.db_connection.execute('''DELETE FROM subscription WHERE ID =
+                        self.dbCur.execute('''DELETE FROM subscription WHERE ID =
                                                                     (SELECT ID FROM subscription WHERE poster_id =
-                                                                    (SELECT poster_id FROM posters WHERE poster_name = ?) AND subscriber_id =
-                                                                    (SELECT subscriber_id FROM subscribers WHERE subscriber_name = ?) AND subreddit_id =
-                                                                    (SELECT subreddit_id FROM subreddits WHERE subreddit_name = ?))''',
+                                                                    (SELECT poster_id FROM posters WHERE poster_name = %s) AND subscriber_id =
+                                                                    (SELECT subscriber_id FROM subscribers WHERE subscriber_name = %s) AND subreddit_id =
+                                                                    (SELECT subreddit_id FROM subreddits WHERE subreddit_name = %s))''',
                                                                         (poster, subscriber, subreddit))
 
-                except sqlite3.IntegrityError:
-                        print("Failed to delete subscription", file=sys.stderr)
+                except Exception as e:
+                        print(f"Failed to delete subscription: {e}", file=sys.stderr)
                         return False
 
-                self.db_connection.commit()
+                self.dbConn.commit()
 
                 return True
 
 
         # Checking if the post has already been responded to
-        def sticky_checker(self, post):
+        def stickyChecker(self, post):
             #print("Checking for sticky", file=sys.stderr)
             bot = False
             stickied = False
@@ -179,7 +244,7 @@ class bot():
 
 
         # Make sure the user exists
-        def user_exists(self, name):
+        def userExists(self, name):
                 try:
                         user = self.reddit.redditor(str(name)).id
                 except Exception as e:
@@ -189,7 +254,7 @@ class bot():
 
 
         # Get all the posts from the sub in OP's history
-        def get_history(self, user, subreddit):
+        def getHistory(self, user, subreddit):
                 history = []
                 for link in user.submissions.new(limit=100):
                         if link.subreddit == subreddit.display_name:
@@ -201,7 +266,7 @@ class bot():
                         welcome = f"Welcome to /r/{subreddit}!\n\nI'm JustNoBot. I help people follow your posts!\n\n"
                 # Previous poster
                 else:
-                        welcome = f"Other posts from /u/{post.author}:\n\n\n"
+                        welcome = f"Other posts from /u/{user}:\n\n\n"
 
                         count = 0
                         longer = False
@@ -220,7 +285,7 @@ class bot():
                 return welcome
 
 
-        def post_comment(self, post, message):
+        def postComment(self, post, message, sticky):
                 try:
                         comment = post.reply(message)
                         print("Commented", file=sys.stderr)
@@ -253,7 +318,8 @@ class bot():
                 except Exception as e:
                         print(e, file=sys.stderr)
 
-        def ping_subscribers(self, post, subreddit):
+        def pingSubscribers(self, post, subreddit):
+                print("Getting subscribers", file=sys.stderr)
                 # Get subscribers
                 subscribers = self.getSubscribers(str(post.author), str(subreddit))
 
@@ -264,17 +330,18 @@ class bot():
 
                         try:
                                 self.reddit.redditor(subscriber).message(subject=subject, message=body)
-                                #print("Subscription message sent", file=sys.stderr)
+                                print("Subscription message sent", file=sys.stderr)
                         except Exception as e:
                                 print(e, file=sys.stderr)
 
 
         # Get subscription/unsubscription requests
-        def get_messages(self):
+        def getMessages(self):
                 print("Getting messages", file=sys.stderr)
                 while True:
                         try:
                                 for message in self.reddit.inbox.stream():
+                                        print("In inbox stream", file=sys.stderr)
                                         message.body = message.body.replace(u'\xa0', u' ')
                                         parts = message.body.split(' ')
                                         if len(parts) != 2:
@@ -331,33 +398,38 @@ class bot():
 
 
         # Go though all the posts on the sub
-        def get_posts(self):
+        def getPosts(self):
                 print("Getting posts", file=sys.stderr)
                 network = self.subreddits[0]
 
                 for i in range(1, len(self.subreddits)):
-                    network = f"{network} + {self.subreddits[i]}"
+                    network = f"{network}+{self.subreddits[i]}"
+                    #print(network, file=sys.stderr)
                     #network = network + '+' + self.subreddits[i]
 
                 while True:
                         try:
                                 for post in self.reddit.subreddit(network).stream.submissions():
+                                        #print("1", file=sys.stderr)
                                         # Don't try to comment on archived posts
                                         if post.archived:
                                             continue
 
                                         # Check for stickies
-                                        sticky = self.sticky_checker(post)
+                                        sticky = self.stickyChecker(post)
+                                        #print("2", file=sys.stderr)
 
                                         # Make sure the author has not deleted their account,
                                         # the post isn't locked, and we haven't already posted
                                         # on it
-                                        if (self.user_exists(post.author) == True) and (sticky[0] == False):
+                                        if (self.userExists(post.author) == True) and (sticky[0] == False):
                                                 subreddit = post.subreddit
+                                                #print("3", file=sys.stderr)
                                                 all_rules = f"**Quick Rule Reminders:**\n\nOP's needs come first, avoid dramamongering, respect the flair, and don't be an asshole. If your only advice is to jump straight to NC or divorce, your comment may be subject to removal at moderator discretion.\n\n[**^(Full Rules)**](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_rules) ^(|) [^(Acronym Index)](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_acronym_dictionary) ^(|) [^(Flair Guide)](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_post_flairs)^(|) [^(Report PM Trolls)](https://www.reddit.com/r/{subreddit}/wiki/index#wiki_trolls_suck)\n\n**Resources:** [^(In Crisis?)](https://www.reddit.com/r/JustNoNetwork/wiki/links#wiki_crisis_links.3A_because_there.2019s_more_than_one_type_of_crisis) ^(|) [^(Tips for Protecting Yourself)](https://www.reddit.com/r/JUSTNOMIL/wiki/index#wiki_protecting_yourself) ^(|) [^(Our Book List)](https://www.reddit.com/r/JustNoNetwork/wiki/books) ^(|) [^(This Sub's Wiki)](https://www.reddit.com/r/{subreddit}/wiki/) ^(|) [^(General Resources)](https://www.reddit.com/r/JustNoNetwork/wiki/tos)\n\n"
 
                                                 # Get OP's history in the sub
-                                                welcome = self.get_history(post.author, subreddit)
+                                                welcome = self.getHistory(post.author, subreddit)
+                                                #print("4", file=sys.stderr)
 
                                                 # How to subscribe
                                                 update = f"\n\n*****\n\n\n\n^(To be notified as soon as {post.author} posts an update) [^click ^here.](http://www.reddit.com/message/compose/?to={config.username}&subject=Subscribe&message={post.author} {subreddit})\n*****\n\n\n"
@@ -368,22 +440,26 @@ class bot():
 
                                                 # Construct the comment
                                                 message = f"{all_rules}{welcome}{update}{bot}"
+                                                #print("5", file=sys.stderr)
 
                                                 # Post the comment
-                                                self.post_comment(post, message)
+                                                self.postComment(post, message, sticky)
+                                                #print("6", file=sys.stderr)
 
                                                 # Inform subscribers
-                                                self.ping_subscribers(post, subreddit)
+                                                self.pingSubscribers(post, subreddit)
+                                                #print("7", file=sys.stderr)
 
                         except Exception as e:
                                 print(f"Restarting posts: {e}", file=sys.stderr)
+                                time.sleep(60)
                                 continue
 
 
         # uses threading to check messages and posts in parallel
         def threading(self):
-                a = threading.Thread(target=self.get_posts, name='Thread-a', daemon=True)
-                b = threading.Thread(target=self.get_messages, name='Thread-b', daemon=True)
+                a = threading.Thread(target=self.getPosts, name='Thread-a', daemon=True)
+                b = threading.Thread(target=self.getMessages, name='Thread-b', daemon=True)
 
                 a.start()
                 b.start()

@@ -7,7 +7,6 @@ import sqlite3
 import sys
 import os
 
-#TODO: Turn this into an actual test file
 class TestDatabase(unittest.TestCase):
         def setUp(self):
                 print("\nSetting up", file=sys.stderr)
@@ -48,21 +47,27 @@ class TestDatabase(unittest.TestCase):
         def test_getSubscribers(self):
                 self.assertEqual(self.checkSubscribers(), [])
                 self.testBot.addSubscriber(self.subscribers[0], self.posters[0], self.subreddits[0])
+                self.assertEqual(self.checkSubscribers(), [self.subscribers[0]])
                 self.assertEqual(self.testBot.getSubscribers(self.posters[0], self.subreddits[0]), [self.subscribers[0]])
 
                 self.testBot.addSubscriber(self.subscribers[0], self.posters[0], self.subreddits[1])
+                self.assertEqual(self.checkSubscribers(), [self.subscribers[0]])
                 self.assertEqual(self.testBot.getSubscribers(self.posters[0], self.subreddits[1]), [self.subscribers[0]])
 
                 self.testBot.addSubscriber(self.subscribers[1], self.posters[1], self.subreddits[1])
+                self.assertEqual(self.checkSubscribers(), [self.subscribers[0],self.subscribers[1]])
                 self.assertEqual(self.testBot.getSubscribers(self.posters[1], self.subreddits[1]), [self.subscribers[1]])
 
                 self.testBot.addSubscriber(self.subscribers[2], self.posters[1], self.subreddits[1])
+                self.assertEqual(self.checkSubscribers(), [self.subscribers[0],self.subscribers[1], self.subscribers[2]])
                 self.assertEqual(self.testBot.getSubscribers(self.posters[1], self.subreddits[1]), [self.subscribers[1], self.subscribers[2]])
 
                 self.testBot.addSubscriber(self.subscribers[1], self.posters[0], self.subreddits[0])
+                self.assertEqual(self.checkSubscribers(), [self.subscribers[0],self.subscribers[1], self.subscribers[2]])
                 self.assertEqual(self.testBot.getSubscribers(self.posters[0], self.subreddits[0]), [self.subscribers[0], self.subscribers[1]])
 
                 self.testBot.addSubscriber(self.subscribers[2], self.posters[0], self.subreddits[1])
+                self.assertEqual(self.checkSubscribers(), [self.subscribers[0],self.subscribers[1], self.subscribers[2]])
                 self.assertEqual(self.testBot.getSubscribers(self.posters[0], self.subreddits[1]), [self.subscribers[0], self.subscribers[2]])
 
 
@@ -94,20 +99,27 @@ class TestDatabase(unittest.TestCase):
 
         def checkSubscribers(self):
                 subs = []
-                for subscriber in self.testBot.db_connection.execute('''SELECT * FROM subscribers''').fetchall():
+                self.testBot.dbCur.execute('''SELECT * FROM subscribers''')
+                for subscriber in self.testBot.dbCur:
                         subs.append(subscriber[1])
                 return subs
 
         def checkPosters(self):
                 posters = []
-                for poster in self.testBot.db_connection.execute('''SELECT * FROM posters''').fetchall():
+                self.testBot.dbCur.execute('''SELECT * FROM posters''')
+                for poster in self.testBot.dbCur:
                         posters.append(poster[1])
                 return posters
 
         def tearDown(self):
                 print("Cleaning up", file=sys.stderr)
-                self.testBot.db_connection.close()
-                os.remove(config.test_db)
+                self.testBot.dbCur.execute('''DROP TABLE IF EXISTS subscribers CASCADE''')
+                self.testBot.dbCur.execute('''DROP TABLE IF EXISTS subscription CASCADE''')
+                self.testBot.dbCur.execute('''DROP TABLE IF EXISTS posters CASCADE''')
+                self.testBot.dbConn.commit()
+                self.testBot.dbCur.close()
+                self.testBot.dbConn.close()
+                #os.remove(config.test_db)
 
 
 if __name__ == '__main__':
