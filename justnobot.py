@@ -8,8 +8,10 @@ import sys
 import psycopg2
 
 
-# TODO: un-OO this? The indentations are ridiculous
-# TODO: rework comment strings
+# TODO:
+# * un-OO this? The indentations are ridiculous
+# * rework comment strings
+# * move sql queries elsewhere
 class bot():
     # define variables
     def __init__(self, isTest):
@@ -270,6 +272,14 @@ class bot():
         return True
 
     # Check if the post has already been responded to
+    # Returns a boolean tuple containing the following:
+    # Is there a comment stickied on the post?
+    #   If there is a sticky, is it from the bot?
+    #       If it's not from the bot, is there a comment elsewhere from the
+    #       bot?
+    # bot: if there is a comment from the bot
+    # stickied: if there is a stickied comment
+    # sticky = [bot, stickied]
     def stickyChecker(self, post):
         bot = False
         stickied = False
@@ -281,12 +291,12 @@ class bot():
             if comment.author == config.username:
                 bot = True
                 return (bot, stickied)
-            else:
+            elif comment.author == config.username:
                 # If the sticky isn't the bot, check for a comment elsewhere
-                if comment.author == config.username:
-                    bot = True
-                    return (bot, stickied)
+                bot = True
                 return (bot, stickied)
+
+        return (bot, stickied)
 
     def lockComment(self, comment_id):
         try:
@@ -350,19 +360,19 @@ class bot():
     # Post the actual comment
     def postComment(self, post, message, sticky):
         try:
-            comment = post.reply(message)
+            comment = post.reply(body=message)
             print("Commented", file=sys.stderr)
         except praw.exceptions.APIException as e:
             print(e, file=sys.stderr)
 
-            if e == "RATELIMIT: 'you are doing that too much. " \
-                    "try again in 5 seconds.' on field 'ratelimit'":
-                try:
-                    comment = post.reply(message)
-                except praw.exceptions.APIException as e:
-                    print(e, file=sys.stderr)
+            # if e == "RATELIMIT: 'you are doing that too much. " \
+            #         "try again in 5 seconds.' on field 'ratelimit'":
+            #     try:
+            #         comment = post.reply(message)
+            #     except praw.exceptions.APIException as e:
+            #         print(e, file=sys.stderr)
 
-    # Double check that there isn't already a sticky
+        # Double check that there isn't already a sticky
         if sticky[0] is False and sticky[1] is False:
             try:
                 comment.mod.distinguish(sticky=True)
@@ -391,12 +401,12 @@ class bot():
         # Send a message to each subscriber
         for subscriber in subscribers:
             body = f"Hello /u/{subscriber},\n\n/u/{post.author} has a new " \
-                "submission in {subreddit}: [{post.title}]" \
-                "({post.permalink})\n\n \n\n*****\n\n\n\n" \
+                f"submission in {subreddit}: [{post.title}]" \
+                f"({post.permalink})\n\n \n\n*****\n\n\n\n" \
                 "^(To unsubscribe) " \
                 "[^click ^here](http://www.reddit.com/message/compose/" \
-                "?to={config.username}&subject=Unsubscribe&message=" \
-                "{post.author} {subreddit})"
+                f"?to={config.username}&subject=Unsubscribe&message=" \
+                f"{post.author} {subreddit})"
 
             try:
                 self.reddit.redditor(subscriber).message(
@@ -481,11 +491,13 @@ class bot():
     # Go though all the posts on the sub
     def getPosts(self):
         print("Getting posts", file=sys.stderr)
+        # print(self.network, file=sys.stderr)
 
         while True:
             try:
                 for post in self.reddit.subreddit(
                         self.network).stream.submissions():
+                    # print(post, file=sys.stderr)
                     # Don't try to comment on archived posts
                     if post.archived:
                         continue
