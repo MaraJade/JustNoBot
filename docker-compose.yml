@@ -1,0 +1,35 @@
+services:
+  app:
+    image: justnobot
+    build: .
+    command: ["python3", "justnobot.py"]
+    volumes:
+      - justnodb:/var/lib/postgresql/data
+    networks:
+      - justnobot
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    restart: on-failure
+  postgresql:
+    image: postgres
+    restart: always
+    volumes:
+      - justnodb:/var/lib/postgresql/data
+    networks:
+      - justnobot
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 
+      POSTGRES_DB: justnodb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  justnodb:
+
+networks:
+  justnobot:
