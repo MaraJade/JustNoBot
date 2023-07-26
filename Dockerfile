@@ -6,6 +6,8 @@ FROM python:3 AS tester
 
 RUN mkdir /app/
 
+COPY dbmigration.py /app
+COPY dumpfile.sql /app
 COPY justnobot.py /app
 COPY requirements.txt /app
 COPY config.py /app
